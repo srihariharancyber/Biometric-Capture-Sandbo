@@ -113,7 +113,8 @@ c:\Users\SRIHARIHARAN\Desktop\ML BIO\
 ├── dataset.py                  # Tokenizer, synthetic human/imposter generators, ROC/EER metrics
 ├── pretrained_model.pt         # Saved PyTorch checkpoint weights
 ├── templates/
-│   └── index.html              # Cyber-defense command center web UI
+│   ├── index.html              # Cyber-defense command center web UI
+│   └── login.html              # Cyber-biometric authentication gateway login page
 ├── static/
 │   ├── css/
 │   │   └── style.css           # Glassmorphic dark design system with neon accents
@@ -128,6 +129,14 @@ c:\Users\SRIHARIHARAN\Desktop\ML BIO\
 
 ---
 
-## 🛡️ Default Credentials & Recovery
-- **Default Operator Step-Up PIN**: `1234`
-- **Reset Session**: Click the circular reset button in the top navigation bar or invoke `POST /api/reset_session`.
+## 🛡️ Authorized Credentials & Access Control
+
+| Credential Type | Value | Description |
+| :--- | :--- | :--- |
+| **System User ID** | `bio@5129` | Authorized operator account identifier |
+| **System Password** | `admin@2951` | Secure authentication gateway passphrase |
+| **Step-Up Recovery PIN** | `1234` | Emergency lockout operator override PIN |
+
+- **Login Gateway**: Visit [http://127.0.0.1:5000/login](http://127.0.0.1:5000/login) and log in with `bio@5129` / `admin@2951` (or click *Autofill Authorized Credentials*).
+- **Session Termination**: Click the Logout icon in the top navigation bar to terminate the active session and return to the login gateway.
+- **Session Reset**: Click the circular reset button in the top navigation bar or invoke `POST /api/reset_session`.

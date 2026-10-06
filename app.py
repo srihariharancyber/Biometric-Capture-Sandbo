@@ -6,7 +6,7 @@ import random
 import threading
 from typing import Dict, Any, List
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -20,6 +20,13 @@ from dataset import (
 )
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
+app.secret_key = os.environ.get('SECRET_KEY', 'aura-continuous-biometrics-secret-key-2951')
+
+# Hardcoded Authorized System Credentials
+AUTH_CREDENTIALS = {
+    'userid': 'bio@5129',
+    'password': 'admin@2951'
+}
 
 # Device configuration
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -181,11 +188,62 @@ class SessionManager:
 session_mgr = SessionManager()
 
 
-# ---------------- API ROUTES ----------------
+# ---------------- AUTHENTICATION & LOGIN ROUTES ----------------
+
+@app.route('/login')
+def login_page():
+    if session.get('authenticated'):
+        return redirect('/')
+    return render_template('login.html')
+
 
 @app.route('/')
 def index():
+    if not session.get('authenticated'):
+        return redirect('/login')
     return render_template('index.html')
+
+
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    data = request.get_json() or {}
+    userid = (data.get('userid') or '').strip()
+    password = (data.get('password') or '').strip()
+    biometric_sample = data.get('biometric_sample', [])
+
+    if userid == AUTH_CREDENTIALS['userid'] and password == AUTH_CREDENTIALS['password']:
+        session['authenticated'] = True
+        session['userid'] = userid
+        session['login_time'] = time.time()
+        session_mgr.trust_score = 0.95
+        session_mgr.threat_state = "SECURE"
+        session_mgr.is_locked = False
+        
+        session_mgr.log_event("LOGIN_SUCCESS", f"User {userid} authenticated successfully", 0.95)
+        return jsonify({
+            'success': True,
+            'message': 'Access granted. Initializing continuous biometric guard.',
+            'redirect': '/'
+        })
+    else:
+        session_mgr.log_event("AUTH_FAILURE", f"Failed authentication attempt for User ID: {userid}", 0.15)
+        return jsonify({
+            'success': False,
+            'message': 'Access Denied: Invalid User ID or Password. Please try again.'
+        }), 401
+
+
+@app.route('/api/logout', methods=['GET', 'POST'])
+def api_logout():
+    session.clear()
+    session_mgr.reset_session()
+    if request.is_json or request.method == 'POST':
+        return jsonify({
+            'success': True,
+            'message': 'Logged out successfully.',
+            'redirect': '/login'
+        })
+    return redirect('/login')
 
 
 @app.route('/api/status', methods=['GET'])

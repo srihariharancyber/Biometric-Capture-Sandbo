@@ -727,6 +727,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const btnLogout = document.getElementById('btn-logout');
+  if (btnLogout) {
+    btnLogout.addEventListener('click', async () => {
+      if (confirm('Terminate session and log out of Bio-Sentry?')) {
+        await fetch('/api/logout', { method: 'POST' });
+        window.location.href = '/login';
+      }
+    });
+  }
+
   const btnSound = document.getElementById('btn-toggle-sound');
   if (btnSound) {
     btnSound.addEventListener('click', () => {

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA | Neuro-Biometric Security Gateway Login</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2306b6d4'><circle cx='12' cy='12' r='10'/></svg>">
+</head>
+<body class="login-body">
+
+  <div class="login-background-glow"></div>
+
+  <main class="login-container">
+    <div class="login-card" id="login-card">
+      
+      <!-- Brand & Header -->
+      <header class="login-header">
+        <div class="brand-logo-icon" style="width:48px; height:48px; margin:0 auto 1rem;">
+          <svg viewBox="0 0 24 24" style="width:28px; height:28px;">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9a5 5 0 0 1 10 0v1a5 5 0 0 1-10 0v-1z"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+        </div>
+        <h1 class="login-title">AURA BIO-SENTRY</h1>
+        <p class="login-subtitle">Continuous Behavioral Biometrics &amp; Self-Attention Deep Networks</p>
+        <div class="login-gateway-pill">
+          <span class="pulse-indicator" style="width:6px; height:6px;"></span>
+          <span>Zero-Trust Gateway v2.4</span>
+        </div>
+      </header>
+
+      <!-- Alert Banner -->
+      <div id="login-error-alert" class="login-error-alert" role="alert" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="login-error-msg">Invalid User ID or Password.</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="login-form" autocomplete="off" onsubmit="return false;">
+        
+        <!-- User ID Group -->
+        <div class="form-group">
+          <label for="login-userid" class="form-label">
+            <span>User ID / Security Identifier</span>
+            <span class="label-hint">Default: <code>bio@5129</code></span>
+          </label>
+          <div class="input-wrapper">
+            <span class="input-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </span>
+            <input 
+              type="text" 
+              id="login-userid" 
+              name="userid" 
+              class="form-input" 
+              placeholder="Enter User ID (e.g. bio@5129)"
+              required 
+              autofocus
+            >
+          </div>
+        </div>
+
+        <!-- Password Group -->
+        <div class="form-group">
+          <label for="login-password" class="form-label">
+            <span>Password / Passphrase</span>
+            <span class="label-hint">Default: <code>admin@2951</code></span>
+          </label>
+          <div class="input-wrapper">
+            <span class="input-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </span>
+            <input 
+              type="password" 
+              id="login-password" 
+              name="password" 
+              class="form-input" 
+              placeholder="Enter Password (e.g. admin@2951)"
+              required
+            >
+            <button type="button" id="btn-toggle-pwd" class="btn-input-action" title="Toggle password visibility">
+              <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Passive Behavioral Biometric Cadence Bar -->
+        <div class="login-cadence-strip">
+          <div class="cadence-header">
+            <span>Passive Keystroke Dynamics</span>
+            <span id="cadence-status" style="color:var(--accent-cyan);">Listening...</span>
+          </div>
+          <div class="cadence-wave-bar">
+            <div id="cadence-wave-fill" class="cadence-wave-fill"></div>
+          </div>
+          <div class="cadence-telemetry">
+            <span>Keystroke Flight: <strong id="login-flight-ms">-- ms</strong></span>
+            <span>Hold Time: <strong id="login-hold-ms">-- ms</strong></span>
+          </div>
+        </div>
+
+        <!-- Quick Autofill Helper -->
+        <div class="login-helper-strip">
+          <button type="button" id="btn-autofill" class="btn-autofill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            <span>Autofill Authorized Credentials</span>
+          </button>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="btn-submit-login" class="btn-login-submit">
+          <span id="btn-login-text">Authenticate &amp; Launch Bio-Sentry</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+
+      </form>
+
+      <!-- Security Protocol Badges -->
+      <footer class="login-footer">
+        <div class="security-chip">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Self-Attention 4-Head</span>
+        </div>
+        <div class="security-chip">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Zero-Trust Protocol</span>
+        </div>
+        <div class="security-chip">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          <span>Continuous Verification</span>
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- Login Logic Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('login-form');
+      const userIdInput = document.getElementById('login-userid');
+      const passwordInput = document.getElementById('login-password');
+      const btnSubmit = document.getElementById('btn-submit-login');
+      const btnText = document.getElementById('btn-login-text');
+      const btnAutofill = document.getElementById('btn-autofill');
+      const btnTogglePwd = document.getElementById('btn-toggle-pwd');
+      const errorAlert = document.getElementById('login-error-alert');
+      const errorMsg = document.getElementById('login-error-msg');
+      const loginCard = document.getElementById('login-card');
+
+      const flightVal = document.getElementById('login-flight-ms');
+      const holdVal = document.getElementById('login-hold-ms');
+      const cadenceFill = document.getElementById('cadence-wave-fill');
+      const cadenceStatus = document.getElementById('cadence-status');
+
+      // Passive keystroke dynamics capture during login
+      let lastKeyDownTime = null;
+      let activeKeyDowns = new Map();
+      let capturedEvents = [];
+
+      function handleKeyDown(e) {
+        const now = performance.now();
+        let flightTime = 0;
+        if (lastKeyDownTime !== null) {
+          flightTime = Math.max(10, Math.round(now - lastKeyDownTime));
+        }
+        lastKeyDownTime = now;
+
+        if (!activeKeyDowns.has(e.code)) {
+          activeKeyDowns.set(e.code, { start: now, flight: flightTime });
+        }
+      }
+
+      function handleKeyUp(e) {
+        const now = performance.now();
+        if (activeKeyDowns.has(e.code)) {
+          const info = activeKeyDowns.get(e.code);
+          activeKeyDowns.delete(e.code);
+          const holdTime = Math.max(12, Math.round(now - info.start));
+
+          capturedEvents.push({
+            type: 'keystroke',
+            key: e.key,
+            hold_time: holdTime,
+            flight_time: info.flight,
+            timestamp: Date.now()
+          });
+
+          // Update cadence telemetry
+          if (flightVal) flightVal.textContent = `${info.flight} ms`;
+          if (holdVal) holdVal.textContent = `${holdTime} ms`;
+          if (cadenceFill) {
+            cadenceFill.style.width = `${Math.min(100, capturedEvents.length * 5)}%`;
+          }
+          if (cadenceStatus) {
+            cadenceStatus.textContent = `${capturedEvents.length} tokens calibrated`;
+          }
+        }
+      }
+
+      [userIdInput, passwordInput].forEach(inp => {
+        inp.addEventListener('keydown', handleKeyDown);
+        inp.addEventListener('keyup', handleKeyUp);
+      });
+
+      // Autofill Authorized Credentials
+      btnAutofill.addEventListener('click', () => {
+        userIdInput.value = 'bio@5129';
+        passwordInput.value = 'admin@2951';
+        userIdInput.focus();
+        if (errorAlert) errorAlert.style.display = 'none';
+
+        // Animate fill wave
+        if (cadenceFill) cadenceFill.style.width = '75%';
+        if (cadenceStatus) cadenceStatus.textContent = 'Credentials Loaded';
+      });
+
+      // Password Toggle
+      btnTogglePwd.addEventListener('click', () => {
+        const isPwd = passwordInput.getAttribute('type') === 'password';
+        passwordInput.setAttribute('type', isPwd ? 'text' : 'password');
+        btnTogglePwd.style.color = isPwd ? 'var(--accent-cyan)' : 'var(--text-dim)';
+      });
+
+      // Form Submission
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const userid = userIdInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (!userid || !password) {
+          showError('Please enter both User ID and Password.');
+          return;
+        }
+
+        btnSubmit.disabled = true;
+        btnText.textContent = 'Verifying Neuromuscular Signature...';
+        if (errorAlert) errorAlert.style.display = 'none';
+
+        try {
+          const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userid: userid,
+              password: password,
+              biometric_sample: capturedEvents
+            })
+          });
+
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            btnText.textContent = 'Access Granted! Initializing...';
+            btnSubmit.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+            setTimeout(() => {
+              window.location.href = data.redirect || '/';
+            }, 450);
+          } else {
+            showError(data.message || 'Invalid credentials. Access Denied.');
+            shakeCard();
+          }
+        } catch (err) {
+          showError('Network error connecting to biometric authentication server.');
+          shakeCard();
+        } finally {
+          btnSubmit.disabled = false;
+          if (btnText.textContent.includes('Verifying')) {
+            btnText.textContent = 'Authenticate & Launch Bio-Sentry';
+          }
+        }
+      });
+
+      function showError(msg) {
+        if (errorAlert && errorMsg) {
+          errorMsg.textContent = msg;
+          errorAlert.style.display = 'flex';
+        }
+      }
+
+      function shakeCard() {
+        if (loginCard) {
+          loginCard.classList.add('shake');
+          setTimeout(() => loginCard.classList.remove('shake'), 400);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
