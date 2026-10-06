@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA | Continuous Authentication via Behavioral Biometrics & Self-Attention Deep Networks</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2306b6d4'><circle cx='12' cy='12' r='10'/></svg>">
+</head>
+<body>
+
+  <!-- Top Navigation & Global Header -->
+  <header class="app-navbar">
+    <div class="brand-wrapper">
+      <div class="brand-logo-icon" id="brand-logo-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9a5 5 0 0 1 10 0v1a5 5 0 0 1-10 0v-1z"/>
+          <circle cx="12" cy="12" r="2"/>
+        </svg>
+      </div>
+      <div class="brand-text-col">
+        <h1 id="app-title">AURA BIO-SENTRY</h1>
+        <div class="brand-sub">Self-Attention Deep Network Continuous Authentication</div>
+      </div>
+    </div>
+
+    <!-- Center Status Metrics -->
+    <div class="nav-center-metrics">
+      <div class="nav-metric-pill" id="nav-guard-status">
+        <div class="pulse-indicator" id="nav-pulse-indicator"></div>
+        <span>GUARD: <strong id="nav-threat-label">SECURE</strong></span>
+      </div>
+      <div class="nav-metric-pill" id="nav-profile-pill">
+        <span>TARGET: <strong id="nav-profile-name">Alice Vance (Touch Typist)</strong></span>
+      </div>
+      <div class="nav-metric-pill" id="nav-first-user-pill" style="border-color:rgba(6,182,212,0.35); background:rgba(6,182,212,0.1);">
+        <span>1st USER (ALICE): <strong id="nav-first-user-speed" style="color:var(--accent-cyan);">84.0 WPM</strong></span>
+      </div>
+      <div class="nav-metric-pill" id="nav-model-pill">
+        <span>MODEL: <strong>Transformer-4H (PyTorch)</strong></span>
+      </div>
+    </div>
+
+    <!-- Top Action Controls -->
+    <div class="nav-actions">
+      <div class="user-selector-group">
+        <label for="user-profile-select">Profile:</label>
+        <select id="user-profile-select" class="user-select">
+          <option value="0">Alice Vance (Touch Typist - Legitimate)</option>
+          <option value="1">Bob Miller (Hunt & Peck - Secondary)</option>
+          <option value="2">Charlie Chen (Coder / Staccato)</option>
+          <option value="3">Eve Malicious (Human Imposter)</option>
+          <option value="4">ReplayBot-v2 (Bot Macro Attack)</option>
+        </select>
+      </div>
+
+      <button id="btn-toggle-sound" class="btn-icon" title="Toggle Futuristic Audio Effects" aria-label="Toggle sound">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+      </button>
+
+      <button id="btn-reset-session" class="btn-icon" title="Reset Session State" aria-label="Reset session">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Application Body -->
+  <main class="app-container">
+
+    <!-- Top Dashboard Grid: Trust Gauge | Capture Arena | Self-Attention Heatmap -->
+    <section class="dashboard-grid-top">
+
+      <!-- Card 1: Continuous Trust & Security State -->
+      <article class="aura-card" id="card-trust-gauge">
+        <header class="card-header">
+          <div class="card-title-group">
+            <div class="card-title-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <h2>CONTINUOUS TRUST</h2>
+          </div>
+          <span class="card-badge secure" id="trust-card-badge">LIVE 60Hz</span>
+        </header>
+
+        <div class="trust-gauge-wrapper">
+          <div class="gauge-svg-container">
+            <svg class="gauge-svg" viewBox="0 0 200 200">
+              <circle class="gauge-bg-circle" cx="100" cy="100" r="90"/>
+              <circle class="gauge-val-circle" id="gauge-val-circle" cx="100" cy="100" r="90"/>
+            </svg>
+            <div class="gauge-center-content">
+              <div class="gauge-score-value" id="gauge-score-value">95%</div>
+              <div class="gauge-score-label">IDENTITY TRUST</div>
+            </div>
+          </div>
+
+          <!-- Dynamic Threat State Banner -->
+          <div class="security-state-banner" id="security-state-banner">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+            <span id="security-state-text">SECURE / AUTHENTICATED</span>
+          </div>
+
+          <!-- Real-Time Biometric Metrics -->
+          <div class="biometric-mini-stats">
+            <div class="mini-stat-card">
+              <div class="mini-stat-label">Key Dwell (Hold)</div>
+              <div class="mini-stat-val" id="stat-hold-time">72 ms</div>
+            </div>
+            <div class="mini-stat-card">
+              <div class="mini-stat-label">Flight Latency</div>
+              <div class="mini-stat-val" id="stat-flight-time">85 ms</div>
+            </div>
+            <div class="mini-stat-card">
+              <div class="mini-stat-label">Cursor Velocity</div>
+              <div class="mini-stat-val" id="stat-mouse-speed">420 px/s</div>
+            </div>
+            <div class="mini-stat-card">
+              <div class="mini-stat-label">Path Curvature</div>
+              <div class="mini-stat-val" id="stat-mouse-curv">0.18 rad</div>
+            </div>
+          </div>
+
+          <!-- Decision Threshold Controller -->
+          <div class="threshold-controller">
+            <div class="threshold-header">
+              <span>Security Threshold: <strong id="threshold-value-label" style="color:var(--accent-cyan);">70%</strong></span>
+              <span>Lenient &harr; High-Sec</span>
+            </div>
+            <input type="range" id="threshold-slider" class="threshold-slider" min="0.40" max="0.90" step="0.05" value="0.70">
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2: Interactive Biometric Capture Arena & Attack Simulator -->
+      <article class="aura-card" id="card-capture-arena">
+        <header class="card-header">
+          <div class="card-title-group">
+            <div class="card-title-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 16h10"/>
+              </svg>
+            </div>
+            <h2>BIOMETRIC CAPTURE & INTERACTION SANDBOX</h2>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <span class="card-badge" id="wpm-badge">Speed: <strong id="stat-wpm" style="color:#f8fafc;">0</strong> WPM</span>
+          </div>
+        </header>
+
+        <!-- Mode Selectors -->
+        <div class="capture-tabs">
+          <button class="capture-tab-btn active" data-mode="standard">Security Passphrase</button>
+          <button class="capture-tab-btn" data-mode="tech">Code Syntax</button>
+          <button class="capture-tab-btn" data-mode="freeform">Freeform Typing</button>
+        </div>
+
+        <!-- Typing Speed Comparison Bar -->
+        <div class="typing-speed-dashboard-bar" id="typing-speed-dashboard-bar">
+          <div class="speed-pill baseline">
+            <span class="speed-lbl">FIRST USER BASELINE (ALICE VANCE)</span>
+            <span class="speed-val" id="first-user-wpm-val">84.0 WPM</span>
+            <span class="speed-sub">Hold: 72ms | Flight: 85ms</span>
+          </div>
+          <div class="speed-pill my-speed">
+            <span class="speed-lbl">MY CURRENT TYPING SPEED</span>
+            <span class="speed-val highlight" id="my-live-wpm">0.0 WPM</span>
+            <span class="speed-sub" id="my-live-cps">0.0 chars/sec | 0 keys</span>
+          </div>
+          <div class="speed-pill delta">
+            <span class="speed-lbl">SPEED DELTA &amp; RATIO</span>
+            <span class="speed-val" id="speed-diff-val">-- WPM</span>
+            <span class="speed-sub" id="speed-match-val">Speed Match: --%</span>
+          </div>
+        </div>
+
+        <!-- Guided Typing Prompt Box -->
+        <div class="typing-prompt-box" id="typing-prompt-box">
+          Loading challenge sentence...
+        </div>
+
+        <!-- Interactive Typing Input -->
+        <textarea id="typing-input-area" class="typing-input-area" placeholder="Type here naturally to test typing speed and stream behavioral keystroke biometrics into the Self-Attention Network..." rows="3"></textarea>
+
+        <!-- Typing Action Toolbar -->
+        <div class="typing-action-row">
+          <button id="btn-check-typing" class="btn-check-typing">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span>Check Typing Speed &amp; Verify Biometrics</span>
+          </button>
+          <button id="btn-restart-typing" class="btn-secondary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+            </svg>
+            <span>Restart Typing Test</span>
+          </button>
+        </div>
+
+        <!-- Inline Typing Verdict Banner -->
+        <div id="inline-typing-verdict" class="inline-typing-verdict">
+          <div id="inline-verdict-text">Click "Check Typing Speed &amp; Verify Biometrics" above to evaluate your typing cadence.</div>
+          <button id="btn-view-report" class="btn-secondary" style="padding:0.25rem 0.6rem; font-size:0.75rem;">View Report &rarr;</button>
+        </div>
+
+        <!-- Interactive Mouse Kinematics Canvas -->
+        <div class="mouse-arena-wrapper" style="margin-top:0.75rem;">
+          <canvas id="mouse-canvas" class="mouse-canvas"></canvas>
+          <div class="mouse-arena-overlay">
+            <span>Mouse Stream: <strong>ACTIVE</strong></span>
+            <span>Target Click: <strong>ENABLED</strong></span>
+          </div>
+          <div class="mouse-arena-hint">Move cursor or click targets inside this box to stream mouse kinematic tokens &rarr;</div>
+        </div>
+
+        <!-- Attack Vector Simulation Studio -->
+        <div class="attack-sim-toolbar">
+          <div class="attack-sim-header">
+            <span>Adversarial Simulation Studio</span>
+            <span style="font-size:0.65rem; color:var(--text-dim);">Test Live Anomaly Detection</span>
+          </div>
+          <div class="sim-btn-group">
+            <button class="sim-btn legit" data-sim="legitimate" id="btn-sim-legit">
+              <span>Authentic User</span>
+              <span class="badge-sub">Legitimate Cadence</span>
+            </button>
+            <button class="sim-btn imposter" data-sim="imposter" id="btn-sim-imposter">
+              <span>Human Intruder</span>
+              <span class="badge-sub">Erratic Imposter</span>
+            </button>
+            <button class="sim-btn bot" data-sim="bot" id="btn-sim-bot">
+              <span>Replay Bot Macro</span>
+              <span class="badge-sub">Zero Jitter / Script</span>
+            </button>
+            <button class="sim-btn fatigue" data-sim="fatigue" id="btn-sim-fatigue">
+              <span>Fatigue Drift</span>
+              <span class="badge-sub">Sluggish Timings</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3: Self-Attention Deep Network & Heatmap Inspector -->
+      <article class="aura-card network-card-column" id="card-attention-network">
+        <header class="card-header">
+          <div class="card-title-group">
+            <div class="card-title-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="6" cy="6" r="3"/>
+                <circle cx="18" cy="6" r="3"/>
+                <circle cx="6" cy="18" r="3"/>
+                <circle cx="18" cy="18" r="3"/>
+                <path d="M6 9v6M18 9v6M9 6h6M9 18h6M8.5 8.5l7 7M8.5 15.5l7-7"/>
+              </svg>
+            </div>
+            <h2>SELF-ATTENTION MATRIX (32&times;32)</h2>
+          </div>
+          <span class="card-badge" style="color:var(--accent-purple); border-color:rgba(168,85,247,0.3);">XAI LAYER 2</span>
+        </header>
+
+        <!-- Head Switcher Tabs -->
+        <div class="attention-head-tabs">
+          <button class="attn-tab-btn active" data-head="mean">Mean (All)</button>
+          <button class="attn-tab-btn" data-head="head_0">Head 0: Hold</button>
+          <button class="attn-tab-btn" data-head="head_1">Head 1: Flight</button>
+          <button class="attn-tab-btn" data-head="head_2">Head 2: Cursor</button>
+          <button class="attn-tab-btn" data-head="head_3">Head 3: Cadence</button>
+        </div>
+
+        <!-- Heatmap Canvas -->
+        <div class="heatmap-canvas-container">
+          <canvas id="heatmap-canvas" class="heatmap-canvas"></canvas>
+          <div id="heatmap-tooltip" class="heatmap-tooltip"></div>
+        </div>
+
+        <!-- Heatmap Legend -->
+        <div class="attention-legend">
+          <span>0.00 (Low)</span>
+          <div class="legend-bar"></div>
+          <span>&ge; 0.25 (High Weight)</span>
+        </div>
+
+        <!-- Transformer Architecture Flow Mini -->
+        <div class="network-flow-mini">
+          <div class="flow-node">Biometric Tokens<br><small>[T&times;8]</small></div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-node">Positional<br><small>Encoding</small></div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-node highlight">Multi-Head Attn<br><small>4 Heads, 64-D</small></div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-node">Temporal<br><small>Pool</small></div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-node highlight">Biometric Emb<br><small>&Ropf;<sup>32</sup> CosSim</small></div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Mid Grid: Biometric Oscilloscope & Fingerprint Radar -->
+    <section class="dashboard-grid-mid">
+
+      <!-- Card 4: Multi-Channel Biometric Oscilloscope -->
+      <article class="aura-card" id="card-oscilloscope">
+        <header class="card-header">
+          <div class="card-title-group">
+            <div class="card-title-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 12h5l3-9 5 18 3-9h4"/>
+              </svg>
+            </div>
+            <h2>REAL-TIME BIOMETRIC TELEMETRY OSCILLOSCOPE</h2>
+          </div>
+          <span class="card-badge secure">STREAMING 60FPS</span>
+        </header>
+
+        <div class="oscilloscope-wrapper">
+          <canvas id="oscilloscope-canvas" class="oscilloscope-canvas"></canvas>
+        </div>
+
+        <div class="oscilloscope-channels">
+          <div class="channel-tag">
+            <div class="channel-color-dot" style="background:#10b981;"></div>
+            <span>CH1: Trust Confidence (0-100%)</span>
+          </div>
+          <div class="channel-tag">
+            <div class="channel-color-dot" style="background:#f59e0b;"></div>
+            <span>CH2: Key Dwell Time (ms)</span>
+          </div>
+          <div class="channel-tag">
+            <div class="channel-color-dot" style="background:#a855f7;"></div>
+            <span>CH3: Flight Latency (ms)</span>
+          </div>
+          <div class="channel-tag">
+            <div class="channel-color-dot" style="background:#06b6d4;"></div>
+            <span>CH4: Mouse Velocity (px/s)</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 5: Biometric Fingerprint Radar Chart -->
+      <article class="aura-card" id="card-radar-chart">
+        <header class="card-header">
+          <div class="card-title-group">
+            <div class="card-title-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+              </svg>
+            </div>
+            <h2>BEHAVIORAL BIOMETRIC FINGERPRINT (RADAR)</h2>
+          </div>
+          <div style="display:flex; gap:0.6rem; font-size:0.7rem; font-family:var(--font-mono);">
+            <span style="color:#06b6d4;">&bull; Baseline Profile</span>
+            <span style="color:#10b981;">&bull; Current Session</span>
+          </div>
+        </header>
+
+        <div class="chart-square-wrapper">
+          <canvas id="radar-canvas"></canvas>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Bottom Grid: Model Training & Benchmark Studio | Forensic Audit Trail -->
+    <section class="dashboard-grid-bottom">
+
+      <!-- Card 6: Model Training & Benchmark Studio -->
+      <article class="aura-card" id="card-benchmark-studio">
+        <header class="card-header">
+          <div class="card-title-group">
+            <div class="card-title-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+            </div>
+            <h2>BENCHMARK EVALUATION & TRAINING</h2>
+          </div>
+          <span class="card-badge" id="model-specs-desc">PyTorch 2.13 CPU</span>
+        </header>
+
+        <!-- Benchmark Stats -->
+        <div class="benchmark-stats-grid">
+          <div class="benchmark-stat-card">
+            <div class="val" id="stat-eer-val">7.1%</div>
+            <div class="lbl">Equal Error Rate (EER)</div>
+          </div>
+          <div class="benchmark-stat-card">
+            <div class="val" id="stat-auc-val">0.941</div>
+            <div class="lbl">ROC Area (AUC)</div>
+          </div>
+          <div class="benchmark-stat-card">
+            <div class="val" id="stat-inf-time">&lt; 15 ms</div>
+            <div class="lbl">Inference Latency</div>
+          </div>
+          <div class="benchmark-stat-card">
+            <div class="val">32 Dim</div>
+            <div class="lbl">Latent Space</div>
+          </div>
+        </div>
+
+        <!-- Interactive ROC Curve Canvas -->
+        <div class="chart-square-wrapper" style="height: 180px;">
+          <canvas id="roc-canvas"></canvas>
+        </div>
+
+        <!-- Train Action Row -->
+        <div class="train-action-row">
+          <div style="font-size:0.75rem; color:var(--text-muted);">
+            <div id="train-loss-text">Ready for continuous adaptation</div>
+          </div>
+          <button id="btn-train-model" class="btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <span>Retrain Deep Network</span>
+          </button>
+        </div>
+
+        <div class="train-progress-bar" id="train-progress-bar">
+          <div class="train-progress-fill" id="train-progress-fill"></div>
+        </div>
+      </article>
+
+      <!-- Card 7: Forensic Audit Trail -->
+      <article class="aura-card" id="card-audit-trail">
+        <header class="card-header">
+          <div class="card-title-group">
+            <div class="card-title-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+            </div>
+            <h2>CONTINUOUS AUTHENTICATION FORENSIC AUDIT TRAIL</h2>
+          </div>
+          <span class="card-badge">IMMUTABLE LOG</span>
+        </header>
+
+        <div class="audit-table-wrapper">
+          <table class="audit-table">
+            <thead>
+              <tr>
+                <th style="width:85px;">Time</th>
+                <th style="width:130px;">Event Type</th>
+                <th>Forensic Audit Details</th>
+                <th style="width:75px;">Score</th>
+              </tr>
+            </thead>
+            <tbody id="audit-table-body">
+              <tr>
+                <td>--:--:--</td>
+                <td><span class="card-badge secure">INITIALIZE</span></td>
+                <td>Continuous biometric baseline loaded and active</td>
+                <td>95.0%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+    </section>
+
+  </main>
+
+  <!-- Security Breach Lockout Modal -->
+  <aside class="modal-backdrop" id="lockout-modal" role="dialog" aria-modal="true" aria-labelledby="lockout-heading">
+    <div class="modal-card breach-alert">
+      <div class="breach-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <h2 id="lockout-heading">UNAUTHORIZED INTRUDER DETECTED</h2>
+      <p>Continuous behavioral biometrics deviated beyond the security threshold. Keystroke flight dynamics and cursor trajectories do not match the enrolled user profile. The session has been locked down to prevent unauthorized access.</p>
+      
+      <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">
+        ENTER OPERATOR STEP-UP PIN (DEFAULT: <strong>1234</strong>)
+      </div>
+
+      <div class="pin-input-group">
+        <input type="password" maxlength="1" class="pin-input" autofocus aria-label="PIN digit 1">
+        <input type="password" maxlength="1" class="pin-input" aria-label="PIN digit 2">
+        <input type="password" maxlength="1" class="pin-input" aria-label="PIN digit 3">
+        <input type="password" maxlength="1" class="pin-input" aria-label="PIN digit 4">
+      </div>
+    </div>
+  </aside>
+
+  <!-- Typing Biometrics & Speed Verification Report Modal -->
+  <aside class="modal-backdrop" id="typing-report-modal" role="dialog" aria-modal="true" aria-labelledby="report-heading">
+    <div class="modal-card report-modal-card">
+      <div class="report-header">
+        <div>
+          <h2 id="report-heading" style="font-size:1.25rem; font-weight:700;">TYPING SPEED &amp; BIOMETRIC VERIFICATION</h2>
+          <div style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">Self-Attention Continuous Identity Assessment</div>
+        </div>
+        <button id="btn-close-report" class="btn-icon" aria-label="Close modal">&times;</button>
+      </div>
+
+      <!-- Verdict Banner -->
+      <div id="modal-report-verdict" class="report-verdict-box match">
+        Evaluating typing test against datamodel baseline...
+      </div>
+
+      <!-- Comparison Metrics Grid -->
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="card-lbl">First User Baseline (Alice)</div>
+          <div class="card-big-val" id="modal-first-user-wpm" style="color:var(--accent-cyan);">84.0 WPM</div>
+          <div class="card-sub-detail" id="modal-first-user-sub">Hold: 72ms | Flight: 85ms</div>
+        </div>
+        <div class="comparison-card">
+          <div class="card-lbl">My Measured Speed</div>
+          <div class="card-big-val" id="modal-my-wpm" style="color:var(--accent-emerald);">0.0 WPM</div>
+          <div class="card-sub-detail" id="modal-my-sub">Hold: --ms | Flight: --ms</div>
+        </div>
+        <div class="comparison-card">
+          <div class="card-lbl">Speed Delta &amp; Ratio</div>
+          <div class="card-big-val" id="modal-diff-wpm" style="color:var(--accent-purple);">-- WPM</div>
+          <div class="card-sub-detail" id="modal-ratio-sub">Rhythm Match: --%</div>
+        </div>
+      </div>
+
+      <!-- Detailed Metrics Table -->
+      <div class="report-table-wrapper">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Biometric Feature</th>
+              <th>First User (Alice Vance)</th>
+              <th>My Performance</th>
+              <th>Deviation / Delta</th>
+            </tr>
+          </thead>
+          <tbody id="modal-report-table-body">
+            <tr>
+              <td>Typing Speed (WPM)</td>
+              <td>84.0 WPM</td>
+              <td id="row-my-wpm">--</td>
+              <td id="row-delta-wpm">--</td>
+            </tr>
+            <tr>
+              <td>Key Dwell / Hold Time</td>
+              <td>72.0 ms</td>
+              <td id="row-my-hold">--</td>
+              <td id="row-delta-hold">--</td>
+            </tr>
+            <tr>
+              <td>Inter-Key Flight Latency</td>
+              <td>85.0 ms</td>
+              <td id="row-my-flight">--</td>
+              <td id="row-delta-flight">--</td>
+            </tr>
+            <tr>
+              <td>Cadence Jitter StdDev</td>
+              <td>22.0 ms</td>
+              <td id="row-my-jitter">--</td>
+              <td id="row-delta-jitter">--</td>
+            </tr>
+            <tr>
+              <td>Keystroke Accuracy</td>
+              <td>99.0%</td>
+              <td id="row-my-acc">--</td>
+              <td>Normal Range</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Actions -->
+      <div class="report-actions">
+        <button id="btn-enroll-from-report" class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="8.5" cy="7" r="4"/>
+            <line x1="20" y1="8" x2="20" y2="14"/>
+            <line x1="23" y1="11" x2="17" y2="11"/>
+          </svg>
+          <span>Save As My Profile in Datamodel</span>
+        </button>
+        <button id="btn-modal-close" class="btn-secondary">Close Report</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Scripts -->
+  <script src="/static/js/audio.js"></script>
+  <script src="/static/js/biometric_tracker.js"></script>
+  <script src="/static/js/attention_viz.js"></script>
+  <script src="/static/js/charts.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
