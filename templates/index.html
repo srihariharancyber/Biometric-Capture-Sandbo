@@ -36,6 +36,10 @@
       <div class="nav-metric-pill" id="nav-first-user-pill" style="border-color:rgba(6,182,212,0.35); background:rgba(6,182,212,0.1);">
         <span>1st USER (ALICE): <strong id="nav-first-user-speed" style="color:var(--accent-cyan);">84.0 WPM</strong></span>
       </div>
+      <div class="nav-metric-pill" id="nav-mysql-pill" style="border-color:rgba(16,185,129,0.35); background:rgba(16,185,129,0.1); cursor:pointer;" title="Click to view MySQL Database Records & Telemetry">
+        <span class="status-dot dot-online" style="width:6px; height:6px; background:#10b981; border-radius:50%; display:inline-block; margin-right:4px;"></span>
+        <span>DB: <strong id="nav-mysql-label" style="color:var(--accent-emerald);">MySQL (biometric_auth_db)</strong></span>
+      </div>
       <div class="nav-metric-pill" id="nav-model-pill">
         <span>MODEL: <strong>Transformer-4H (PyTorch)</strong></span>
       </div>
@@ -53,6 +57,14 @@
           <option value="4">ReplayBot-v2 (Bot Macro Attack)</option>
         </select>
       </div>
+
+      <button id="btn-open-db-modal" class="btn-icon" title="View MySQL Database Explorer & Tables" aria-label="MySQL Records" style="color:var(--accent-emerald); border-color:rgba(16,185,129,0.3);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <ellipse cx="12" cy="5" rx="9" ry="3"/>
+          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+        </svg>
+      </button>
 
       <button id="btn-toggle-sound" class="btn-icon" title="Toggle Futuristic Audio Effects" aria-label="Toggle sound">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -606,6 +618,102 @@
           <span>Save As My Profile in Datamodel</span>
         </button>
         <button id="btn-modal-close" class="btn-secondary">Close Report</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MySQL Database Explorer Modal -->
+  <aside class="aura-modal-backdrop" id="db-modal-backdrop" style="display:none;" aria-hidden="true" role="dialog">
+    <div class="aura-modal-card" style="max-width:850px; width:92vw;">
+      <header class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-title-icon" style="background:rgba(16,185,129,0.15); color:var(--accent-emerald);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+            </svg>
+          </div>
+          <div>
+            <h3>MySQL Database Telemetry &amp; Records</h3>
+            <p class="modal-subtitle">Relational persistence for user credentials, profiles, typing checks, and security logs</p>
+          </div>
+        </div>
+        <button id="btn-db-modal-close-x" class="btn-modal-close" aria-label="Close modal">&times;</button>
+      </header>
+
+      <!-- DB Health Stats Grid -->
+      <div class="report-stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); margin-bottom:1.25rem;">
+        <div class="report-stat-card">
+          <div class="stat-label">Connection Status</div>
+          <div class="stat-val" id="db-stat-status" style="color:var(--accent-emerald); font-size:1.15rem;">CONNECTED</div>
+          <div class="stat-sub" id="db-stat-host">127.0.0.1:3306</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="stat-label">Database Name</div>
+          <div class="stat-val" id="db-stat-dbname" style="color:var(--accent-cyan); font-size:1.05rem;">biometric_auth_db</div>
+          <div class="stat-sub" id="db-stat-ver">MySQL 8.0</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="stat-label">Users Table</div>
+          <div class="stat-val" id="db-stat-users">1</div>
+          <div class="stat-sub">bio@5129</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="stat-label">Profiles Table</div>
+          <div class="stat-val" id="db-stat-profiles">5</div>
+          <div class="stat-sub">Active centroids</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="stat-label">Typing Checks</div>
+          <div class="stat-val" id="db-stat-checks" style="color:var(--accent-amber);">0</div>
+          <div class="stat-sub">Persisted tests</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="stat-label">Audit Logs</div>
+          <div class="stat-val" id="db-stat-audits">0</div>
+          <div class="stat-sub">Security events</div>
+        </div>
+      </div>
+
+      <!-- Recent Typing Checks Persisted in MySQL -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+        <h4 style="font-size:0.9rem; color:var(--text-bright); text-transform:uppercase; letter-spacing:0.05em; margin:0;">
+          Persisted Typing Speed Tests (<code>typing_checks</code> table)
+        </h4>
+        <button id="btn-refresh-db" class="btn-secondary" style="padding:0.25rem 0.65rem; font-size:0.75rem;">
+          Refresh MySQL Records
+        </button>
+      </div>
+
+      <div class="report-table-wrapper" style="max-height:220px; overflow-y:auto;">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>User ID</th>
+              <th>My Speed</th>
+              <th>1st User (Alice)</th>
+              <th>Speed Ratio</th>
+              <th>Similarity</th>
+              <th>Verdict</th>
+            </tr>
+          </thead>
+          <tbody id="db-typing-table-body">
+            <tr>
+              <td colspan="7" style="text-align:center; color:var(--text-dim); padding:1rem;">
+                No typing tests recorded yet. Type in the arena and click "Check Typing Speed" to persist records!
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Actions -->
+      <div class="report-actions" style="margin-top:1.25rem;">
+        <button id="btn-db-modal-close" class="btn-primary" style="background:linear-gradient(135deg, #059669, #10b981);">
+          Close Explorer
+        </button>
       </div>
     </div>
   </aside>

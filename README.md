@@ -129,14 +129,42 @@ c:\Users\SRIHARIHARAN\Desktop\ML BIO\
 
 ---
 
+## 🗄️ MySQL Database Architecture (`biometric_auth_db`)
+
+The system integrates directly with a relational **MySQL 8.0** database for enterprise-grade persistence, session forensics, and auditability.
+
+### Database Configuration
+Configurable via environment variables (with automatic local fallbacks):
+- `MYSQL_HOST`: `127.0.0.1` (Default)
+- `MYSQL_PORT`: `3306` (Default)
+- `MYSQL_USER`: `root` (Default)
+- `MYSQL_PASSWORD`: `root` (Default)
+- `MYSQL_DB`: `biometric_auth_db`
+
+### Relational Schema & Tables
+1. **`users`**:
+   - `id`, `userid` (e.g. `bio@5129`), `password` (`admin@2951`), `display_name`, `role`, `created_at`, `last_login`
+2. **`user_profiles`**:
+   - Persona baselines and custom enrolled subjects with exact `typing_speed_wpm`, `mean_hold`, `mean_flight`, `mouse_speed`, and 32-D metric learning `centroid_json`.
+3. **`typing_checks`**:
+   - Historical log of each evaluated typing test: `userid`, `user_wpm`, `first_user_wpm` (84.0 WPM), `wpm_ratio`, `similarity_pct`, `mean_hold_ms`, `mean_flight_ms`, `verdict` (`MATCH` / `MISMATCH`), and input sample.
+4. **`audit_logs`**:
+   - Security event stream tracking authentications, profile switches, biometric token calibration, and threat state changes.
+5. **`continuous_sessions`**:
+   - Ephemeral session tokens and real-time EMA trust score status.
+
+---
+
 ## 🛡️ Authorized Credentials & Access Control
 
 | Credential Type | Value | Description |
 | :--- | :--- | :--- |
-| **System User ID** | `bio@5129` | Authorized operator account identifier |
+| **System User ID** | `bio@5129` | Authorized operator account identifier (stored in MySQL `users` table) |
 | **System Password** | `admin@2951` | Secure authentication gateway passphrase |
 | **Step-Up Recovery PIN** | `1234` | Emergency lockout operator override PIN |
+| **MySQL Database** | `biometric_auth_db` | Auto-initialized relational database on port 3306 |
 
 - **Login Gateway**: Visit [http://127.0.0.1:5000/login](http://127.0.0.1:5000/login) and log in with `bio@5129` / `admin@2951` (or click *Autofill Authorized Credentials*).
+- **MySQL Database Explorer**: Click the green **DB: MySQL (biometric_auth_db)** pill or the database icon in the header to view live table counts and persisted typing test records.
 - **Session Termination**: Click the Logout icon in the top navigation bar to terminate the active session and return to the login gateway.
 - **Session Reset**: Click the circular reset button in the top navigation bar or invoke `POST /api/reset_session`.

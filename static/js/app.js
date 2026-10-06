@@ -827,10 +827,125 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {}
   }
 
+  // 15. MySQL Database Telemetry & Explorer
+  const dbModalBackdrop = document.getElementById('db-modal-backdrop');
+  const btnOpenDbModal = document.getElementById('btn-open-db-modal');
+  const navMysqlPill = document.getElementById('nav-mysql-pill');
+  const btnDbModalCloseX = document.getElementById('btn-db-modal-close-x');
+  const btnDbModalClose = document.getElementById('btn-db-modal-close');
+  const btnRefreshDb = document.getElementById('btn-refresh-db');
+
+  async function fetchDbStatus() {
+    try {
+      const res = await fetch('/api/db/status');
+      const data = await res.json();
+      const navLabel = document.getElementById('nav-mysql-label');
+      if (data.status === 'connected') {
+        if (navLabel) navLabel.textContent = `MySQL (${data.database})`;
+        const statStatus = document.getElementById('db-stat-status');
+        const statHost = document.getElementById('db-stat-host');
+        const statDbname = document.getElementById('db-stat-dbname');
+        const statVer = document.getElementById('db-stat-ver');
+        const statUsers = document.getElementById('db-stat-users');
+        const statProfiles = document.getElementById('db-stat-profiles');
+        const statChecks = document.getElementById('db-stat-checks');
+        const statAudits = document.getElementById('db-stat-audits');
+
+        if (statStatus) {
+          statStatus.textContent = 'CONNECTED';
+          statStatus.style.color = 'var(--accent-emerald)';
+        }
+        if (statHost) statHost.textContent = `${data.host}:${data.port}`;
+        if (statDbname) statDbname.textContent = data.database;
+        if (statVer) statVer.textContent = `MySQL ${data.mysql_version || '8.0'}`;
+        if (statUsers) statUsers.textContent = data.users_count ?? 1;
+        if (statProfiles) statProfiles.textContent = data.profiles_count ?? 5;
+        if (statChecks) statChecks.textContent = data.typing_checks_count ?? 0;
+        if (statAudits) statAudits.textContent = data.audit_logs_count ?? 0;
+      } else {
+        if (navLabel) navLabel.textContent = 'MySQL (Offline)';
+        const statStatus = document.getElementById('db-stat-status');
+        if (statStatus) {
+          statStatus.textContent = 'OFFLINE';
+          statStatus.style.color = 'var(--accent-rose)';
+        }
+      }
+    } catch (e) {
+      console.warn('fetchDbStatus error:', e);
+    }
+  }
+
+  async function fetchDbTypingHistory() {
+    try {
+      const res = await fetch('/api/db/typing_history?limit=15');
+      const data = await res.json();
+      const tbody = document.getElementById('db-typing-table-body');
+      if (!tbody) return;
+
+      if (!data.records || data.records.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align:center; color:var(--text-dim); padding:1rem;">
+              No typing tests recorded yet in MySQL. Run a typing test to see persisted records here!
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = data.records.map(r => `
+        <tr>
+          <td><code style="color:var(--accent-cyan); font-size:0.75rem;">${r.time_str || '--'}</code></td>
+          <td>${r.userid}</td>
+          <td><strong style="color:var(--text-bright);">${r.user_wpm} WPM</strong></td>
+          <td>${r.first_user_wpm} WPM</td>
+          <td>${r.wpm_ratio}%</td>
+          <td>${r.similarity_pct}%</td>
+          <td>
+            <span class="card-badge ${r.verdict === 'MATCH' ? 'secure' : 'breach'}">
+              ${r.verdict}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.warn('fetchDbTypingHistory error:', e);
+    }
+  }
+
+  function openDbModal() {
+    if (dbModalBackdrop) {
+      dbModalBackdrop.style.display = 'flex';
+      setTimeout(() => dbModalBackdrop.classList.add('active'), 10);
+    }
+    fetchDbStatus();
+    fetchDbTypingHistory();
+  }
+
+  function closeDbModal() {
+    if (dbModalBackdrop) {
+      dbModalBackdrop.classList.remove('active');
+      setTimeout(() => dbModalBackdrop.style.display = 'none', 200);
+    }
+  }
+
+  if (btnOpenDbModal) btnOpenDbModal.addEventListener('click', openDbModal);
+  if (navMysqlPill) navMysqlPill.addEventListener('click', openDbModal);
+  if (btnDbModalCloseX) btnDbModalCloseX.addEventListener('click', closeDbModal);
+  if (btnDbModalClose) btnDbModalClose.addEventListener('click', closeDbModal);
+  if (btnRefreshDb) {
+    btnRefreshDb.addEventListener('click', () => {
+      fetchDbStatus();
+      fetchDbTypingHistory();
+      audio.playChime(640, 0.08);
+    });
+  }
+
   // Initial runs
   fetchStatus();
   fetchProfiles();
   fetchBenchmark();
   fetchAuditLog();
+  fetchDbStatus();
   setPrompt('standard');
 });

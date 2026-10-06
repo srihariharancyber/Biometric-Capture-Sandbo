@@ -18,6 +18,7 @@ from dataset import (
     compute_benchmark_metrics,
     USER_PERSONAS
 )
+import db
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = os.environ.get('SECRET_KEY', 'aura-continuous-biometrics-secret-key-2951')
@@ -72,6 +73,15 @@ class SessionManager:
         self._init_default_profiles()
 
     def _init_default_profiles(self):
+        # Initialize MySQL database schema and default admin
+        db.init_db()
+
+        # Load existing profiles from MySQL if present
+        loaded = db.load_user_profiles()
+        if loaded:
+            self.profiles = loaded
+            return
+
         with torch.no_grad():
             for uid, p in USER_PERSONAS.items():
                 # Generate sample baseline streams
@@ -80,7 +90,7 @@ class SessionManager:
                 x_tensor = torch.tensor([tokens[:32]], dtype=torch.float32).to(DEVICE)
                 emb = MODEL.extract_embedding(x_tensor).cpu().numpy()[0]
                 
-                self.profiles[uid] = {
+                profile_obj = {
                     'id': uid,
                     'name': p['name'],
                     'role': p['role'],
@@ -95,6 +105,8 @@ class SessionManager:
                     'centroid': emb.tolist(),
                     'is_custom': False
                 }
+                self.profiles[uid] = profile_obj
+                db.save_user_profile(profile_obj)
 
     def get_active_profile(self) -> Dict[str, Any]:
         return self.profiles.get(self.active_profile_id, self.profiles[0])
@@ -156,6 +168,7 @@ class SessionManager:
                 'centroid': emb.tolist(),
                 'is_custom': True
             }
+            db.save_user_profile(self.profiles[new_id])
             self.active_profile_id = new_id
             self.trust_score = 0.95
             self.threat_state = "SECURE"
@@ -175,6 +188,7 @@ class SessionManager:
         self.audit_log.insert(0, entry)
         if len(self.audit_log) > 60:
             self.audit_log.pop()
+        db.record_audit_log(entry['timestamp'], event_type, details, score, self.threat_state)
 
     def reset_session(self):
         with self.lock:
@@ -211,25 +225,31 @@ def api_login():
     password = (data.get('password') or '').strip()
     biometric_sample = data.get('biometric_sample', [])
 
-    if userid == AUTH_CREDENTIALS['userid'] and password == AUTH_CREDENTIALS['password']:
+    # Validate against MySQL database
+    user_record = db.verify_user(userid, password)
+
+    if user_record:
         session['authenticated'] = True
-        session['userid'] = userid
+        session['userid'] = user_record['userid']
+        session['display_name'] = user_record.get('display_name', 'Authorized Operator')
+        session['role'] = user_record.get('role', 'SecOps Admin')
         session['login_time'] = time.time()
         session_mgr.trust_score = 0.95
         session_mgr.threat_state = "SECURE"
         session_mgr.is_locked = False
         
-        session_mgr.log_event("LOGIN_SUCCESS", f"User {userid} authenticated successfully", 0.95)
+        session_mgr.log_event("LOGIN_SUCCESS", f"User {userid} ({user_record.get('role')}) authenticated via MySQL database (biometric_auth_db)", 0.95)
         return jsonify({
             'success': True,
-            'message': 'Access granted. Initializing continuous biometric guard.',
-            'redirect': '/'
+            'message': 'Access granted via MySQL database. Initializing continuous biometric guard.',
+            'redirect': '/',
+            'user': user_record
         })
     else:
-        session_mgr.log_event("AUTH_FAILURE", f"Failed authentication attempt for User ID: {userid}", 0.15)
+        session_mgr.log_event("AUTH_FAILURE", f"Failed MySQL authentication attempt for User ID: {userid}", 0.15)
         return jsonify({
             'success': False,
-            'message': 'Access Denied: Invalid User ID or Password. Please try again.'
+            'message': 'Access Denied: Invalid User ID or Password in MySQL database. Please try again.'
         }), 401
 
 
@@ -390,6 +410,19 @@ def check_typing():
     else:
         verdict = f"BEHAVIORAL DIVERGENCE: My typing speed ({my_wpm} WPM) or transition rhythms deviate from First User {first_user['name']} ({first_user_wpm} WPM)."
         verdict_class = "MISMATCH"
+
+    # Record test in MySQL typing_checks table
+    db.record_typing_check(
+        userid=session.get('userid', 'bio@5129'),
+        user_wpm=my_wpm,
+        first_user_wpm=first_user_wpm,
+        wpm_ratio=speed_ratio_pct,
+        similarity_pct=round(cos_sim * 100.0, 1),
+        mean_hold=my_hold,
+        mean_flight=my_flight,
+        verdict=verdict_class,
+        raw_text=text
+    )
 
     session_mgr.log_event("TYPING_CHECK", f"Checked typing: My Speed={my_wpm} WPM vs First User={first_user_wpm} WPM ({verdict_class})", 0.95 if is_verified else 0.40)
 
@@ -758,6 +791,30 @@ def reset_session():
 @app.route('/api/audit_log', methods=['GET'])
 def get_audit_log():
     return jsonify({'events': session_mgr.audit_log})
+
+
+# ---------------- MYSQL DATABASE TELEMETRY & RECORDS ROUTES ----------------
+
+@app.route('/api/db/status', methods=['GET'])
+def api_db_status():
+    """Returns MySQL connection health, host, database name, and record statistics"""
+    return jsonify(db.get_db_status())
+
+
+@app.route('/api/db/typing_history', methods=['GET'])
+def api_db_typing_history():
+    """Returns recent typing speed tests persisted in MySQL typing_checks table"""
+    limit = int(request.args.get('limit', 20))
+    records = db.get_recent_typing_checks(limit=limit)
+    return jsonify({'records': records, 'count': len(records)})
+
+
+@app.route('/api/db/audit_history', methods=['GET'])
+def api_db_audit_history():
+    """Returns recent audit events persisted in MySQL audit_logs table"""
+    limit = int(request.args.get('limit', 30))
+    records = db.get_recent_audit_logs(limit=limit)
+    return jsonify({'records': records, 'count': len(records)})
 
 
 if __name__ == '__main__':
