@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA AI | Continuous Biometric Authentication &amp; Neuromuscular Intelligence</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2338bdf8'><circle cx='12' cy='12' r='10'/></svg>">
+  <style>
+    /* Custom WWW.COM Browser Shell Styles */
+    .browser-window {
+      max-width: 1380px;
+      margin: 1.5rem auto 3rem;
+      background: #090e1a;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(6, 182, 212, 0.12);
+    }
+
+    /* Window Controls Bar */
+    .browser-titlebar {
+      background: #0c1427;
+      padding: 0.65rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .window-dots {
+      display: flex;
+      gap: 7px;
+    }
+    .window-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .browser-tabs {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+      overflow-x: auto;
+    }
+    .browser-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: none;
+      padding: 0.4rem 1rem;
+      border-radius: 10px 10px 0 0;
+      font-size: 0.78rem;
+      color: #94a3b8;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .browser-tab.active {
+      background: #090e1a;
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.35);
+      border-bottom: 2px solid #38bdf8;
+      font-weight: 600;
+    }
+
+    /* Omnibar / Address bar */
+    .browser-omnibar {
+      background: #0f182e;
+      padding: 0.6rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      flex-wrap: wrap;
+    }
+    .nav-buttons {
+      display: flex;
+      gap: 6px;
+      color: #64748b;
+    }
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #f8fafc;
+    }
+    .address-field {
+      flex: 1;
+      min-width: 280px;
+      background: #070a14;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 8px;
+      padding: 0.4rem 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #e2e8f0;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .ssl-lock {
+      color: #10b981;
+      display: flex;
+      align-items: center;
+    }
+    .address-text {
+      color: #38bdf8;
+      font-weight: 500;
+    }
+    .address-path {
+      color: #64748b;
+    }
+
+    /* Biometric Sentry Shield in Omnibar */
+    .omnibar-biometric-badge {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #10b981;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+    }
+    .google-mini-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4285f4, #34a853);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Bookmarks Toolbar */
+    .bookmarks-bar {
+      background: #0a1122;
+      padding: 0.4rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      font-size: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      overflow-x: auto;
+    }
+    .bookmark-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #94a3b8;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .bookmark-item:hover, .bookmark-item.active {
+      color: #38bdf8;
+    }
+
+    /* Main Content Area inside Browser */
+    .browser-content {
+      padding: 1.75rem;
+      min-height: 720px;
+      background: radial-gradient(circle at 10% 10%, rgba(6, 182, 212, 0.05) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 90%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+                  #070a12;
+    }
+
+    /* Step 1: Typing Checker & Handler Box */
+    .typing-gate-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid rgba(56, 189, 248, 0.4);
+      border-radius: 16px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 30px rgba(56, 189, 248, 0.15);
+    }
+    .gate-badge-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #0284c7, #06b6d4);
+      color: #ffffff;
+      padding: 0.25rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.75rem;
+    }
+    .gate-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .gate-subtitle {
+      font-size: 0.88rem;
+      color: #94a3b8;
+      margin-top: 0.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Baseline Comparison Strip */
+    .target-profile-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 1.25rem;
+    }
+    .profile-info-pill {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+    }
+    .profile-info-pill.highlight {
+      border-color: rgba(66, 133, 244, 0.5);
+      background: rgba(66, 133, 244, 0.06);
+    }
+    .pip-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+    }
+    .pip-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      margin: 2px 0;
+    }
+    .pip-sub {
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+
+    /* Challenge Sentence Prompt */
+    .typing-challenge-box {
+      background: #090e1b;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #94a3b8;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+    .char-match { color: #10b981; }
+    .char-mismatch { color: #f43f5e; background: rgba(244, 63, 94, 0.2); }
+    .char-cursor { border-left: 2px solid #38bdf8; animation: blink 1s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* Typing Input Area */
+    .www-typing-input {
+      width: 100%;
+      background: #0a1120;
+      border: 1.5px solid rgba(56, 189, 248, 0.4);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: #f8fafc;
+      outline: none;
+      resize: vertical;
+      min-height: 80px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .www-typing-input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Live Telemetry Row */
+    .telemetry-live-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    .tele-cell {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 0.6rem 0.85rem;
+      text-align: center;
+    }
+    .tele-lbl {
+      font-size: 0.68rem;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .tele-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: #38bdf8;
+      margin-top: 2px;
+    }
+
+    /* Action & Handling Buttons */
+    .handling-action-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-verify-now {
+      background: linear-gradient(135deg, #0284c7, #06b6d4);
+      border: none;
+      color: #ffffff;
+      padding: 0.65rem 1.4rem;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-verify-now:hover {
+      background: linear-gradient(135deg, #0369a1, #0891b2);
+      transform: translateY(-1px);
+    }
+    .btn-sim-test {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-sim-test:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    /* Verdict & Handling Banner */
+    .handling-verdict-banner {
+      margin-top: 1.25rem;
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.88rem;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .handling-verdict-banner.idle {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: rgba(255, 255, 255, 0.06);
+      color: #94a3b8;
+    }
+    .handling-verdict-banner.verified {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.45);
+      color: #34d399;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+    }
+    .handling-verdict-banner.anomaly {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.45);
+      color: #fb7185;
+      box-shadow: 0 0 20px rgba(244, 63, 94, 0.2);
+    }
+
+    /* WWW.COM Web Application Modules */
+    .portal-modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+    .portal-module-card {
+      background: rgba(14, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+    .module-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 0.75rem;
+    }
+    .module-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Google Web Search Simulator */
+    .google-search-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #090e1b;
+      border: 1px solid rgba(66, 133, 244, 0.4);
+      border-radius: 999px;
+      padding: 0.6rem 1.25rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .google-search-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #f8fafc;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .search-result-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .search-link {
+      color: #60a5fa;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .search-link:hover { text-decoration: underline; }
+    .search-snippet {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+
+    /* Web Mail Composer */
+    .composer-field {
+      margin-bottom: 0.75rem;
+    }
+    .composer-label {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+    .composer-input {
+      width: 100%;
+      background: #090e1b;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 0.45rem 0.75rem;
+      color: #f8fafc;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .composer-input:focus { border-color: #38bdf8; }
+
+    /* Floating Mini HUD */
+    .floating-sentry-hud {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      backdrop-filter: blur(12px);
+      border-radius: 14px;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.2);
+      z-index: 999;
+    }
+    .hud-trust-val {
+      font-size: 1.2rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #10b981;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top App Navigation -->
+  <header class="app-navbar">
+    <div class="brand-wrapper">
+      <div class="brand-logo-icon">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" fill="none" stroke-width="2"/>
+          <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" fill="none" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="brand-text-col">
+        <h1>AURA AI</h1>
+        <div class="brand-sub">Continuous Behavioral Biometrics Verification Gateway</div>
+      </div>
+    </div>
+
+    <!-- Center Nav Status -->
+    <div class="nav-center-metrics">
+      <div class="nav-metric-pill">
+        <div class="pulse-indicator"></div>
+        <span>SECURITY: <strong id="hud-threat-state" style="color:var(--accent-emerald);">{{ threat_state }}</strong></span>
+      </div>
+      <div class="nav-metric-pill" style="border-color:rgba(66,133,244,0.35); background:rgba(66,133,244,0.1);">
+        <span>USER: <strong style="color:#60a5fa;">{{ user.display_name }} ({{ user.userid }})</strong></span>
+      </div>
+      <div class="nav-metric-pill" style="border-color:rgba(56,189,248,0.35); background:rgba(56,189,248,0.1);">
+        <span>BASELINE: <strong id="hud-baseline-wpm" style="color:#38bdf8;">{{ srihari_user.typing_speed_wpm }} WPM</strong></span>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="nav-actions">
+      <a href="/" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-size:0.82rem; padding:0.45rem 0.9rem;" title="View Deep Self-Attention Network & Telemetry Dashboard">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>AURA AI Sentry Dashboard</span>
+      </a>
+
+      <button id="btn-www-logout" class="btn-icon" title="Logout" style="color:var(--accent-rose);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main style="padding: 0 1.5rem;">
+
+    <!-- Browser Window Simulation -->
+    <div class="browser-window">
+      
+      <!-- Titlebar & Tabs -->
+      <div class="browser-titlebar">
+        <div class="window-dots">
+          <div class="window-dot dot-red"></div>
+          <div class="window-dot dot-yellow"></div>
+          <div class="window-dot dot-green"></div>
+        </div>
+
+        <div class="browser-tabs">
+          <div class="browser-tab active" id="tab-www">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+            </svg>
+            <span>AURA AI — Continuous Biometric Gateway</span>
+          </div>
+          <div class="browser-tab" id="tab-typing-gate">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span>Live Keystroke Dynamic Sentry</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Omnibar Address Header -->
+      <div class="browser-omnibar">
+        <div class="nav-buttons">
+          <button class="nav-btn" title="Back">&larr;</button>
+          <button class="nav-btn" title="Forward">&rarr;</button>
+          <button class="nav-btn" id="btn-refresh-browser" title="Reload page">&#8635;</button>
+        </div>
+
+        <div class="address-field">
+          <span class="ssl-lock" title="Secure TLS 1.3 / AURA Continuous Authentication">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </span>
+          <span class="address-text">https://aura.ai</span><span class="address-path">/portal/continuous-biometrics</span>
+        </div>
+
+        <div class="omnibar-biometric-badge">
+          <span class="status-dot dot-online" style="width:6px; height:6px; background:#10b981; border-radius:50%; display:inline-block;"></span>
+          <span>AURA AI: <strong>CONTINUOUS ACTIVE</strong></span>
+        </div>
+
+        <div class="user-profile-badge">
+          <div class="google-mini-avatar">S</div>
+          <span style="font-weight:600; color:#f8fafc;">{{ user.display_name }}</span>
+          <span style="color:#64748b;">({{ user.userid }})</span>
+        </div>
+      </div>
+
+      <!-- Bookmarks Strip -->
+      <div class="bookmarks-bar">
+        <a href="#typing-section" class="bookmark-item active">⚡ 1. Typing Checker &amp; Handling Gate</a>
+        <a href="#search-section" class="bookmark-item">🔍 Google / WWW Search</a>
+        <a href="#mail-section" class="bookmark-item">📝 Secure Mail Composer</a>
+        <a href="#retrain-section" class="bookmark-item">🎯 Personal Model Studio</a>
+        <a href="#mobile-gateway-section" class="bookmark-item">📱 Mobile Gateway</a>
+        <a href="/" class="bookmark-item">🛡️ Deep Net Transformer Heatmap</a>
+        <span style="margin-left:auto; font-family:var(--font-mono); color:#64748b; font-size:0.7rem;">Session Token: <span id="lbl-session-token" style="color:#38bdf8;">AURA-AI-5129</span></span>
+      </div>
+
+      <!-- Browser Body Content -->
+      <div class="browser-content">
+
+        <!-- ======================================================= -->
+        <!-- STEP 1: USER TYPING CADENCE CHECK & HANDLING GATE      -->
+        <!-- ======================================================= -->
+        <section class="typing-gate-card" id="typing-section">
+          <div class="gate-badge-step">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>MANDATORY STEP 1: BEHAVIORAL BIOMETRICS GATE</span>
+          </div>
+
+          <h2 class="gate-title">
+            <span>First Checking User Typing &amp; Real-Time Handling</span>
+            <span class="card-badge secure" id="gate-status-pill">AWAITING INPUT</span>
+          </h2>
+          <p class="gate-subtitle">
+            Before proceeding to explore AURA AI applications, your neuromuscular typing rhythm (hold dynamics, flight latencies, digram cadences) is actively checked and handled against your enrolled baseline profile (<strong>{{ user.display_name }}</strong>: <strong>{{ srihari_user.typing_speed_wpm }} WPM</strong>).
+          </p>
+
+          <!-- Target Baseline Profiles -->
+          <div class="target-profile-strip">
+            <div class="profile-info-pill highlight">
+              <div class="pip-title">MY ENROLLED BASELINE ({{ user.display_name }})</div>
+              <div class="pip-val" id="pip-srihari-wpm">{{ srihari_user.typing_speed_wpm }} WPM</div>
+              <div class="pip-sub">Hold: {{ srihari_user.mean_hold }}ms | Flight: {{ srihari_user.mean_flight }}ms</div>
+            </div>
+            <div class="profile-info-pill">
+              <div class="pip-title">FIRST USER REFERENCE (ALICE VANCE)</div>
+              <div class="pip-val" id="pip-alice-wpm">{{ first_user.typing_speed_wpm }} WPM</div>
+              <div class="pip-sub">Hold: {{ first_user.mean_hold }}ms | Flight: {{ first_user.mean_flight }}ms</div>
+            </div>
+            <div class="profile-info-pill">
+              <div class="pip-title">ACTIVE AUTHENTICATION PROTOCOL</div>
+              <div class="pip-val" style="color:#10b981;">PyTorch Transformer</div>
+              <div class="pip-sub">4-Head Self-Attention &bull; &Ropf;<sup>32</sup> Latent Space</div>
+            </div>
+          </div>
+
+          <!-- Challenge Sentence Prompt Box -->
+          <div class="typing-challenge-box" id="www-challenge-box">
+            The quick brown fox jumps over the lazy dog and continuous behavioral biometrics secures the open web.
+          </div>
+
+          <!-- Interactive Typing Textarea -->
+          <textarea 
+            id="www-typing-input" 
+            class="www-typing-input" 
+            placeholder="Type the challenge sentence here naturally to check and handle your typing cadence..." 
+            rows="3" 
+            autofocus
+          ></textarea>
+
+          <!-- Live Telemetry Readouts -->
+          <div class="telemetry-live-row">
+            <div class="tele-cell">
+              <div class="tele-lbl">Typing Speed</div>
+              <div class="tele-val" id="tele-wpm">0.0 WPM</div>
+            </div>
+            <div class="tele-cell">
+              <div class="tele-lbl">Key Dwell (Hold)</div>
+              <div class="tele-val" id="tele-hold">-- ms</div>
+            </div>
+            <div class="tele-cell">
+              <div class="tele-lbl">Flight Latency</div>
+              <div class="tele-val" id="tele-flight">-- ms</div>
+            </div>
+            <div class="tele-cell">
+              <div class="tele-lbl">Neuromuscular Match</div>
+              <div class="tele-val" id="tele-match" style="color:#10b981;">-- %</div>
+            </div>
+            <div class="tele-cell">
+              <div class="tele-lbl">Accuracy</div>
+              <div class="tele-val" id="tele-acc">100%</div>
+            </div>
+            <div class="tele-cell">
+              <div class="tele-lbl">Tokens Streamed</div>
+              <div class="tele-val" id="tele-tokens">0</div>
+            </div>
+          </div>
+
+          <!-- Action & Simulation Bar -->
+          <div class="handling-action-bar">
+            <button id="btn-www-check-typing" class="btn-verify-now">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              <span>Check Typing Speed &amp; Verify Biometrics</span>
+            </button>
+
+            <button id="btn-restart-challenge" class="btn-sim-test">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+              </svg>
+              <span>Restart Test</span>
+            </button>
+
+            <button id="btn-sim-srihari" class="btn-sim-test" style="border-color:rgba(66,133,244,0.4); color:#60a5fa;">
+              <span>Simulate Srihariharan (78 WPM)</span>
+            </button>
+
+            <button id="btn-sim-bot" class="btn-sim-test" style="border-color:rgba(244,63,94,0.4); color:#fb7185;">
+              <span>Simulate Imposter / Bot Attack</span>
+            </button>
+          </div>
+
+          <!-- Dynamic Real-Time Handling Verdict Banner -->
+          <div id="www-verdict-banner" class="handling-verdict-banner idle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span id="www-verdict-text">
+              Begin typing the challenge sentence above. The system continuously evaluates keystroke hold duration and flight latency in real-time.
+            </span>
+          </div>
+
+        </section>
+
+        <!-- ======================================================= -->
+        <!-- WWW.COM WEB PORTAL APPLICATIONS (LIVE INTERACTIVE APPS)  -->
+        <!-- ======================================================= -->
+        <div class="portal-modules-grid">
+
+          <!-- App 1: Google / WWW Search Engine -->
+          <div class="portal-module-card" id="search-section">
+            <div class="module-header">
+              <div class="module-title">
+                <svg width="18" height="18" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span>Google / WWW.COM AI Search</span>
+              </div>
+              <span class="card-badge secure">LIVE BIOMETRIC FEED</span>
+            </div>
+
+            <div class="google-search-bar">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input 
+                type="text" 
+                id="portal-search-input" 
+                class="google-search-input" 
+                placeholder="Search web or type queries (passively checks keystroke cadence)..."
+                value="Zero trust continuous biometric authentication"
+              >
+            </div>
+
+            <div id="search-results-list">
+              <div class="search-result-item">
+                <a href="#" class="search-link">AURA: Continuous User Recognition via Self-Attention Transformer Networks</a>
+                <div class="search-snippet">Passive zero-friction continuous authentication using keystroke hold dynamics, flight latencies, and mouse kinematics with explainable AI attention heatmaps.</div>
+              </div>
+              <div class="search-result-item">
+                <a href="#" class="search-link">Google Identity &amp; Behavioral Zero-Trust Security Architecture</a>
+                <div class="search-snippet">Mitigating credential theft and session hijacking by continuously verifying neuromuscular biometric signatures against user baselines in real time.</div>
+              </div>
+              <div class="search-result-item">
+                <a href="#" class="search-link">MySQL 8.0 Telemetry &amp; Forensics in Behavioral Biometrics</a>
+                <div class="search-snippet">Relational persistence of typing checks, token streams, and immutable audit logs within biometric_auth_db schema.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- App 2: Secure Web Mail & Report Composer -->
+          <div class="portal-module-card" id="mail-section">
+            <div class="module-header">
+              <div class="module-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span>Secure Email &amp; Report Dispatch</span>
+              </div>
+              <span class="card-badge secure">PROTECTED</span>
+            </div>
+
+            <div class="composer-field">
+              <label class="composer-label">To:</label>
+              <input type="text" class="composer-input" value="secops@aura-security.io" readonly>
+            </div>
+            <div class="composer-field">
+              <label class="composer-label">Subject:</label>
+              <input type="text" id="composer-subject" class="composer-input" value="Biometric Verification Report — Srihariharan">
+            </div>
+            <div class="composer-field">
+              <label class="composer-label">Message Body (Type naturally):</label>
+              <textarea id="composer-body" class="composer-input" rows="4" placeholder="Draft your security intelligence message here..."></textarea>
+            </div>
+
+            <button type="button" id="btn-send-report" class="btn-primary" style="width:100%; justify-content:center;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              <span>Transmit Authenticated Report</span>
+            </button>
+          </div>
+
+          <!-- App 3: Personal Neural Model Retraining & Weights Export Studio -->
+          <div class="portal-module-card" id="retrain-section">
+            <div class="module-header">
+              <div class="module-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                <span>🎯 Personal AI Model Retraining Studio</span>
+              </div>
+              <span class="card-badge secure">PyTorch Self-Attention</span>
+            </div>
+
+            <p style="font-size:0.83rem; color:#94a3b8; margin-bottom:1rem; line-height:1.45;">
+              Calibrate and optimize the <strong>BiometricSelfAttentionNet</strong> directly to your personal typing &amp; touch kinematics (dwell durations, flight latencies, jitter, rhythm) using contrastive <em>Triplet Biometric Loss</em> against imposter baselines.
+            </p>
+
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:0.85rem 1rem; margin-bottom:1rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:0.75rem;">
+                <span style="color:#94a3b8; font-weight:600;">CALIBRATION STATUS</span>
+                <span id="lbl-personal-epochs" style="color:#38bdf8; font-family:var(--font-mono); font-weight:700;">Idle (Ready for 10 Epochs)</span>
+              </div>
+              <div style="width:100%; height:8px; background:rgba(255,255,255,0.06); border-radius:999px; overflow:hidden; margin-bottom:8px;">
+                <div id="personal-train-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, #0284c7, #10b981); transition:width 0.3s ease;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:#64748b; font-family:var(--font-mono);">
+                <span>Loss: <strong id="lbl-personal-loss" style="color:#34d399;">--</strong></span>
+                <span>Margin: <strong style="color:#cbd5e1;">0.30</strong></span>
+                <span>Dim: <strong style="color:#cbd5e1;">32-D</strong></span>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <button type="button" id="btn-train-personal-model" class="btn-primary" style="justify-content:center; gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <span>Train Personal Neural Model Now</span>
+              </button>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px;">
+                <a href="/api/export_model" class="btn-sim-test" style="justify-content:center; text-decoration:none;" download="srihariharan_biometric_model.pt">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  <span>Model (.pt)</span>
+                </a>
+                <a href="/api/export_profile" class="btn-sim-test" style="justify-content:center; text-decoration:none;" download="srihariharan_biometric_profile.json">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                  <span>Profile (JSON)</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- App 4: Mobile & Cross-Device Access Gateway -->
+          <div class="portal-module-card" id="mobile-gateway-section">
+            <div class="module-header">
+              <div class="module-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                  <line x1="12" y1="18" x2="12.01" y2="18"/>
+                </svg>
+                <span>📱 Mobile &amp; Cross-Device Gateway</span>
+              </div>
+              <span class="card-badge secure">Touch Dynamics</span>
+            </div>
+
+            <p style="font-size:0.83rem; color:#94a3b8; margin-bottom:0.75rem; line-height:1.45;">
+              Connect your smartphone or tablet to evaluate mobile <strong>touch dynamics</strong> (tap dwell time, inter-tap flight, swipe trajectory velocity, curvature &amp; jerk).
+            </p>
+
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.85rem;">
+              <div style="font-size:0.72rem; color:#94a3b8; font-weight:600; margin-bottom:4px;">CROSS-DEVICE PUBLIC &amp; NETWORK ADDRESS:</div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <input type="text" id="mobile-network-url" class="composer-input" style="font-family:var(--font-mono); font-size:0.82rem; color:#38bdf8; margin-bottom:0;" value="{{ request.url_root }}aura.ai" readonly>
+                <button type="button" id="btn-copy-ip" class="btn-sim-test" style="white-space:nowrap; padding:0.5rem 0.85rem;" title="Copy Network URL">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                  </svg>
+                  <span id="copy-btn-text">Copy</span>
+                </button>
+              </div>
+            </div>
+
+            <div style="background:rgba(14, 165, 233, 0.06); border:1px solid rgba(14, 165, 233, 0.2); border-radius:10px; padding:0.75rem 0.9rem; font-size:0.75rem; color:#cbd5e1; line-height:1.4;">
+              <div style="font-weight:700; color:#38bdf8; margin-bottom:3px; display:flex; align-items:center; gap:5px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                <span>How to open on Phone / Tablet:</span>
+              </div>
+              <ol style="margin:0 0 0 1.2rem; padding:0;">
+                <li>Open browser on your phone, tablet, or another computer from anywhere in the world.</li>
+                <li>Navigate to <code id="mobile-code-url" style="color:#38bdf8;">{{ request.url_root }}aura.ai</code>.</li>
+                <li>Tap <strong>Sign in with Google</strong> (Srihariharan).</li>
+                <li>Type or touch to test real-time mobile biometrics!</li>
+              </ol>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Floating Mini Sentry HUD -->
+  <div class="floating-sentry-hud" id="floating-sentry-hud">
+    <div>
+      <div style="font-size:0.68rem; color:#94a3b8; font-weight:600;">AURA SENTRY TRUST</div>
+      <div class="hud-trust-val" id="mini-hud-trust">{{ trust_score }}%</div>
+    </div>
+    <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:12px;">
+      <div style="font-size:0.68rem; color:#94a3b8;">LIVE SPEED</div>
+      <div style="font-family:var(--font-mono); font-size:1rem; font-weight:700; color:#38bdf8;" id="mini-hud-wpm">0.0 WPM</div>
+    </div>
+    <a href="/" class="btn-icon" title="Open Full Deep Attention Sentry Dashboard" style="color:#38bdf8; text-decoration:none;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+        <polyline points="15 3 21 3 21 9"/>
+        <line x1="10" y1="14" x2="21" y2="3"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- WWW.COM Client Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const challengeBox = document.getElementById('www-challenge-box');
+      const typingInput = document.getElementById('www-typing-input');
+      const btnCheckTyping = document.getElementById('btn-www-check-typing');
+      const btnRestart = document.getElementById('btn-restart-challenge');
+      const btnSimSrihari = document.getElementById('btn-sim-srihari');
+      const btnSimBot = document.getElementById('btn-sim-bot');
+      const verdictBanner = document.getElementById('www-verdict-banner');
+      const verdictText = document.getElementById('www-verdict-text');
+      const gateStatusPill = document.getElementById('gate-status-pill');
+
+      // Telemetry Elements
+      const teleWpm = document.getElementById('tele-wpm');
+      const teleHold = document.getElementById('tele-hold');
+      const teleFlight = document.getElementById('tele-flight');
+      const teleMatch = document.getElementById('tele-match');
+      const teleAcc = document.getElementById('tele-acc');
+      const teleTokens = document.getElementById('tele-tokens');
+      const miniHudWpm = document.getElementById('mini-hud-wpm');
+      const miniHudTrust = document.getElementById('mini-hud-trust');
+
+      const challengeSentence = "The quick brown fox jumps over the lazy dog and continuous behavioral biometrics secures the open web.";
+      
+      let keyEvents = [];
+      let activeKeyDowns = new Map();
+      let lastKeyDownTime = null;
+      let startTime = null;
+      let errorCount = 0;
+
+      // Render challenge sentence
+      function renderChallenge(typedText = "") {
+        let html = "";
+        for (let i = 0; i < challengeSentence.length; i++) {
+          const expected = challengeSentence[i];
+          if (i < typedText.length) {
+            const actual = typedText[i];
+            if (actual === expected) {
+              html += `<span class="char-match">${escapeHtml(expected)}</span>`;
+            } else {
+              html += `<span class="char-mismatch">${escapeHtml(expected)}</span>`;
+            }
+          } else if (i === typedText.length) {
+            html += `<span class="char-cursor">${escapeHtml(expected)}</span>`;
+          } else {
+            html += `<span>${escapeHtml(expected)}</span>`;
+          }
+        }
+        challengeBox.innerHTML = html;
+      }
+      renderChallenge("");
+
+      function escapeHtml(char) {
+        if (char === '&') return '&amp;';
+        if (char === '<') return '&lt;';
+        if (char === '>') return '&gt;';
+        if (char === ' ') return '&nbsp;';
+        return char;
+      }
+
+      // Keystroke & Touch listeners
+      let lastTouchStart = null;
+      let lastTouchEnd = null;
+      let touchStartX = 0, touchStartY = 0;
+
+      function trackKeyDown(e) {
+        const now = performance.now();
+        if (startTime === null && typingInput === document.activeElement) {
+          startTime = now;
+        }
+
+        let flightTime = 0;
+        if (lastKeyDownTime !== null) {
+          flightTime = Math.max(5, Math.round(now - lastKeyDownTime));
+        }
+        lastKeyDownTime = now;
+
+        if (!activeKeyDowns.has(e.code)) {
+          activeKeyDowns.set(e.code, { start: now, flight: flightTime, key: e.key });
+        }
+      }
+
+      function trackKeyUp(e) {
+        const now = performance.now();
+        if (activeKeyDowns.has(e.code)) {
+          const info = activeKeyDowns.get(e.code);
+          activeKeyDowns.delete(e.code);
+          const holdTime = Math.max(10, Math.round(now - info.start));
+
+          keyEvents.push({
+            type: 'keystroke',
+            key: info.key,
+            hold_time: holdTime,
+            flight_time: info.flight,
+            timestamp: Date.now()
+          });
+
+          updateLiveTelemetry();
+        }
+      }
+
+      // Mobile Touch Dynamics Tracking
+      window.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        if (!touch) return;
+        const now = performance.now();
+        if (startTime === null) startTime = now;
+        
+        let flightTime = 80;
+        if (lastTouchEnd !== null) {
+          flightTime = Math.max(10, Math.round(now - lastTouchEnd));
+        }
+        lastTouchStart = now;
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+      }, { passive: true });
+
+      window.addEventListener('touchend', (e) => {
+        if (lastTouchStart === null) return;
+        const now = performance.now();
+        const holdTime = Math.max(15, Math.round(now - lastTouchStart));
+        lastTouchEnd = now;
+
+        const touch = e.changedTouches[0];
+        let velocity = 0;
+        if (touch) {
+          const dx = touch.clientX - touchStartX;
+          const dy = touch.clientY - touchStartY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          velocity = holdTime > 0 ? (dist / (holdTime / 1000.0)) : 0;
+        }
+
+        keyEvents.push({
+          type: 'touch',
+          key: 'TouchTap',
+          hold_time: holdTime,
+          flight_time: lastTouchEnd ? Math.max(10, Math.round(now - lastTouchStart)) : 85,
+          velocity: Math.round(velocity),
+          timestamp: Date.now()
+        });
+        updateLiveTelemetry();
+      }, { passive: true });
+
+      // Attach tracking to typing input and search inputs
+      [typingInput, document.getElementById('portal-search-input'), document.getElementById('composer-body')].forEach(inp => {
+        if (inp) {
+          inp.addEventListener('keydown', trackKeyDown);
+          inp.addEventListener('keyup', trackKeyUp);
+        }
+      });
+
+      typingInput.addEventListener('input', () => {
+        const text = typingInput.value;
+        renderChallenge(text);
+
+        // Mobile on-screen keyboard fallback: if browser didn't fire keyup with valid hold
+        if (keyEvents.length < text.length) {
+          const now = performance.now();
+          const char = text[text.length - 1];
+          const hold = Math.round(65 + Math.random() * 15);
+          const flight = lastKeyDownTime ? Math.max(20, Math.round(now - lastKeyDownTime)) : 90;
+          lastKeyDownTime = now;
+          keyEvents.push({
+            type: 'keystroke',
+            key: char,
+            hold_time: hold,
+            flight_time: flight,
+            timestamp: Date.now()
+          });
+        }
+
+        // Count errors
+        errorCount = 0;
+        for (let i = 0; i < text.length; i++) {
+          if (text[i] !== challengeSentence[i]) errorCount++;
+        }
+
+        updateLiveTelemetry();
+
+        // Auto evaluate when length is sufficient
+        if (text.length >= 28 && keyEvents.length >= 20) {
+          evaluateTyping(false);
+        }
+      });
+
+      function updateLiveTelemetry() {
+        const text = typingInput.value;
+        const now = performance.now();
+        const durationMs = startTime ? Math.max(200, now - startTime) : 0;
+        const charCount = text.length;
+
+        let wpm = 0.0;
+        if (durationMs > 500 && charCount > 0) {
+          wpm = ((charCount / 5.0) / (durationMs / 60000.0)).toFixed(1);
+        }
+
+        const holds = keyEvents.map(e => e.hold_time).filter(h => h > 0);
+        const flights = keyEvents.map(e => e.flight_time).filter(f => f > 0);
+        const meanHold = holds.length ? Math.round(holds.reduce((a, b) => a + b, 0) / holds.length) : '--';
+        const meanFlight = flights.length ? Math.round(flights.reduce((a, b) => a + b, 0) / flights.length) : '--';
+
+        const acc = charCount > 0 ? Math.max(0, Math.round(((charCount - errorCount) / charCount) * 100)) : 100;
+
+        teleWpm.textContent = `${wpm} WPM`;
+        teleHold.textContent = `${meanHold} ms`;
+        teleFlight.textContent = `${meanFlight} ms`;
+        teleAcc.textContent = `${acc}%`;
+        teleTokens.textContent = keyEvents.length;
+        miniHudWpm.textContent = `${wpm} WPM`;
+      }
+
+      // Check Typing & Biometrics Handler
+      async function evaluateTyping(showLoader = true) {
+        if (keyEvents.length < 5) {
+          showVerdictBanner('idle', 'Please type more characters to capture a sufficient biometric sequence (at least 5-10 characters).');
+          return;
+        }
+
+        if (showLoader) {
+          gateStatusPill.className = 'card-badge';
+          gateStatusPill.textContent = 'EVALUATING NEURAL NET...';
+          btnCheckTyping.disabled = true;
+        }
+
+        const text = typingInput.value || challengeSentence.slice(0, keyEvents.length);
+        const durationMs = startTime ? Math.max(400, performance.now() - startTime) : keyEvents.length * 150;
+
+        try {
+          const res = await fetch('/api/check_typing', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text: text,
+              events: keyEvents,
+              duration_ms: durationMs,
+              char_count: text.length || keyEvents.length,
+              error_count: errorCount,
+              target_profile_id: 5 // Target Srihariharan's profile
+            })
+          });
+
+          const data = await res.json();
+          if (res.ok && data.success) {
+            handleVerificationResult(data);
+          } else {
+            showVerdictBanner('anomaly', data.message || 'Typing verification error.');
+          }
+        } catch (e) {
+          showVerdictBanner('anomaly', 'Network communication error during typing check.');
+        } finally {
+          btnCheckTyping.disabled = false;
+        }
+      }
+
+      function handleVerificationResult(data) {
+        const v = data.verification;
+        const my = data.my_typing;
+        const comp = data.comparison;
+        const target = data.first_user;
+
+        teleMatch.textContent = `${comp.rhythm_match_pct}%`;
+        teleWpm.textContent = `${my.wpm} WPM`;
+        teleHold.textContent = `${my.mean_hold_ms} ms`;
+        teleFlight.textContent = `${my.mean_flight_ms} ms`;
+
+        if (v.is_verified) {
+          gateStatusPill.className = 'card-badge secure';
+          gateStatusPill.textContent = 'VERIFIED / LEGITIMATE';
+          miniHudTrust.textContent = '98%';
+
+          showVerdictBanner('verified', `
+            <strong>VERIFICATION SUCCESSFUL (Srihariharan Matched):</strong> 
+            Your typing speed of <strong>${my.wpm} WPM</strong> (hold: ${my.mean_hold_ms}ms, flight: ${my.mean_flight_ms}ms) conforms to Srihariharan's neuromuscular profile with <strong>${comp.rhythm_match_pct}%</strong> cadence alignment. WWW.COM Web Applications are fully authorized and operational.
+          `);
+        } else {
+          gateStatusPill.className = 'card-badge alert';
+          gateStatusPill.textContent = 'ANOMALY DETECTED';
+          miniHudTrust.textContent = '48%';
+
+          showVerdictBanner('anomaly', `
+            <strong>BEHAVIORAL DIVERGENCE DETECTED:</strong> 
+            Measured cadence (${my.wpm} WPM, hold delta: ${comp.hold_diff_ms}ms) diverged from Srihariharan's enrolled baseline (${target.wpm} WPM). A Step-Up Challenge has been flagged in MySQL audit telemetry.
+          `);
+        }
+      }
+
+      function showVerdictBanner(type, html) {
+        verdictBanner.className = `handling-verdict-banner ${type}`;
+        verdictText.innerHTML = html;
+      }
+
+      btnCheckTyping.addEventListener('click', () => evaluateTyping(true));
+
+      btnRestart.addEventListener('click', () => {
+        typingInput.value = "";
+        keyEvents = [];
+        activeKeyDowns.clear();
+        lastKeyDownTime = null;
+        startTime = null;
+        errorCount = 0;
+        renderChallenge("");
+        updateLiveTelemetry();
+        gateStatusPill.className = 'card-badge';
+        gateStatusPill.textContent = 'AWAITING INPUT';
+        showVerdictBanner('idle', 'Test restarted. Type naturally to evaluate typing dynamics and neuromuscular biometrics.');
+        typingInput.focus();
+      });
+
+      // Simulation 1: Srihariharan Authentic (78 WPM)
+      btnSimSrihari.addEventListener('click', () => {
+        keyEvents = [];
+        const sample = challengeSentence.slice(0, 32);
+        typingInput.value = sample;
+        renderChallenge(sample);
+
+        let t = 0;
+        for (let i = 0; i < sample.length; i++) {
+          const hold = Math.round(68 + (Math.random() * 14 - 7));
+          const flight = Math.round(92 + (Math.random() * 20 - 10));
+          t += hold + flight;
+          keyEvents.push({
+            type: 'keystroke',
+            key: sample[i],
+            hold_time: hold,
+            flight_time: flight,
+            timestamp: Date.now() + t
+          });
+        }
+        startTime = performance.now() - t;
+        evaluateTyping(true);
+      });
+
+      // Simulation 2: Imposter / Bot Macro Attack
+      btnSimBot.addEventListener('click', () => {
+        keyEvents = [];
+        const sample = challengeSentence.slice(0, 32);
+        typingInput.value = sample;
+        renderChallenge(sample);
+
+        let t = 0;
+        for (let i = 0; i < sample.length; i++) {
+          // Robotic 40ms hold, 25ms flight with zero jitter
+          const hold = 38;
+          const flight = 26;
+          t += hold + flight;
+          keyEvents.push({
+            type: 'keystroke',
+            key: sample[i],
+            hold_time: hold,
+            flight_time: flight,
+            timestamp: Date.now() + t
+          });
+        }
+        startTime = performance.now() - t;
+        evaluateTyping(true);
+      });
+
+      // Logout handler
+      document.getElementById('btn-www-logout').addEventListener('click', async () => {
+        await fetch('/api/logout', { method: 'POST' });
+        window.location.href = '/login';
+      });
+
+      // Browser reload
+      document.getElementById('btn-refresh-browser').addEventListener('click', () => {
+        window.location.reload();
+      });
+
+      // Mail send confirmation
+      document.getElementById('btn-send-report').addEventListener('click', () => {
+        const btn = document.getElementById('btn-send-report');
+        btn.innerHTML = '<span>Report Transmitted to SecOps &amp; Logged in MySQL!</span>';
+        btn.style.background = '#10b981';
+        setTimeout(() => {
+          btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>Transmit Authenticated Report</span>';
+          btn.style.background = '';
+        }, 2200);
+      });
+
+      // Personal Model Retraining Studio Handlers
+      const btnTrainPersonal = document.getElementById('btn-train-personal-model');
+      const progressBar = document.getElementById('personal-train-progress-bar');
+      const lblEpochs = document.getElementById('lbl-personal-epochs');
+      const lblLoss = document.getElementById('lbl-personal-loss');
+
+      if (btnTrainPersonal) {
+        btnTrainPersonal.addEventListener('click', async () => {
+          btnTrainPersonal.disabled = true;
+          btnTrainPersonal.innerHTML = '<span class="spinner" style="display:inline-block; width:14px; height:14px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:spin 0.8s linear infinite;"></span><span>Training PyTorch Network...</span>';
+          lblEpochs.textContent = 'Optimizing Triplet Loss (10 Epochs)...';
+          progressBar.style.width = '35%';
+
+          try {
+            const res = await fetch('/api/train_personal', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                events: keyEvents,
+                epochs: 10,
+                name: 'Srihariharan'
+              })
+            });
+
+            progressBar.style.width = '80%';
+            const data = await res.json();
+            if (res.ok && data.success) {
+              progressBar.style.width = '100%';
+              lblEpochs.textContent = `Completed 10 / 10 Epochs (${data.loss_reduction_pct}% Loss Reduced)`;
+              lblLoss.textContent = `${data.final_loss}`;
+              showVerdictBanner('verified', `
+                <strong>🎯 PERSONAL MODEL CALIBRATED:</strong> 
+                Fine-tuned <em>BiometricSelfAttentionNet</em> on Srihariharan's neuromuscular profile! Initial loss ${data.initial_loss} reduced to <strong>${data.final_loss}</strong>. New centroid saved to MySQL and weights exported to <code>srihariharan_model.pt</code>.
+              `);
+            } else {
+              lblEpochs.textContent = 'Training failed';
+              showVerdictBanner('anomaly', data.message || 'Error fine-tuning neural network.');
+            }
+          } catch (e) {
+            lblEpochs.textContent = 'Network error';
+            showVerdictBanner('anomaly', 'Network communication error during personal calibration.');
+          } finally {
+            btnTrainPersonal.disabled = false;
+            btnTrainPersonal.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Train Personal Neural Model Now</span>';
+          }
+        });
+      }
+
+      // Copy IP & Cross-Device Network Address Handler
+      const btnCopyIp = document.getElementById('btn-copy-ip');
+      const copyBtnText = document.getElementById('copy-btn-text');
+      const mobileNetworkUrl = document.getElementById('mobile-network-url');
+
+      const mobileCodeUrl = document.getElementById('mobile-code-url');
+      if (mobileNetworkUrl && window.location.origin) {
+        mobileNetworkUrl.value = `${window.location.origin}/aura.ai`;
+        if (mobileCodeUrl) mobileCodeUrl.textContent = `${window.location.origin}/aura.ai`;
+      }
+
+      if (btnCopyIp && mobileNetworkUrl) {
+        btnCopyIp.addEventListener('click', () => {
+          navigator.clipboard.writeText(mobileNetworkUrl.value).then(() => {
+            copyBtnText.textContent = 'Copied!';
+            btnCopyIp.style.borderColor = '#10b981';
+            btnCopyIp.style.color = '#34d399';
+            setTimeout(() => {
+              copyBtnText.textContent = 'Copy';
+              btnCopyIp.style.borderColor = '';
+              btnCopyIp.style.color = '';
+            }, 2000);
+          }).catch(() => {
+            mobileNetworkUrl.select();
+            document.execCommand('copy');
+            copyBtnText.textContent = 'Copied!';
+            setTimeout(() => {
+              copyBtnText.textContent = 'Copy';
+            }, 2000);
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

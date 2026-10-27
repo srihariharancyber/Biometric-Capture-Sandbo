@@ -6,3 +6,19 @@ __pycache__/
 .idea/
 *.log
 .DS_Store
+
+# Environment & Secrets
+.env
+*.env.local
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Large binaries & temporary tools
+cloudflared.exe
+*.exe
+
+# Exported files
+*.tmp

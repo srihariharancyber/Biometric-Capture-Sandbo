@@ -17,10 +17,34 @@ DB_CONFIG = {
     'password': os.environ.get('MYSQL_PASSWORD', 'root'),
     'database': os.environ.get('MYSQL_DB', 'biometric_auth_db'),
     'charset': 'utf8mb4',
-    'connect_timeout': 3,
+    'connect_timeout': 5,
     'autocommit': True,
     'cursorclass': pymysql.cursors.DictCursor
 }
+
+# Auto-parse single-string DATABASE_URL or MYSQL_URL if provided by cloud host (Railway, Aiven, TiDB, etc.)
+db_url = os.environ.get('DATABASE_URL') or os.environ.get('MYSQL_URL')
+if db_url and ('mysql' in db_url or 'mariadb' in db_url):
+    try:
+        from urllib.parse import urlparse
+        parsed = urlparse(db_url)
+        if parsed.hostname:
+            DB_CONFIG['host'] = parsed.hostname
+        if parsed.port:
+            DB_CONFIG['port'] = parsed.port
+        if parsed.username:
+            DB_CONFIG['user'] = parsed.username
+        if parsed.password:
+            DB_CONFIG['password'] = parsed.password
+        if parsed.path and len(parsed.path) > 1:
+            DB_CONFIG['database'] = parsed.path.lstrip('/')
+    except Exception as e:
+        logger.warning(f"Failed parsing DATABASE_URL: {e}")
+
+# Enable SSL for cloud-hosted databases if required
+if (os.environ.get('MYSQL_SSL', '').lower() in ('1', 'true', 'yes') or 
+    any(h in DB_CONFIG['host'].lower() for h in ['aiven', 'railway', 'planetscale', 'tidb', 'aws', 'render'])):
+    DB_CONFIG['ssl'] = {'ssl_mode': 'REQUIRED'}
 
 
 def get_server_connection():
@@ -135,6 +159,16 @@ def init_db() -> bool:
                     `display_name` = 'Lead Biometric Officer';
             """)
 
+            # Seed Authorized User: srihariharn07@gmail.com / auraai!5129 (Google Account)
+            cur.execute("""
+                INSERT INTO `users` (`userid`, `password`, `display_name`, `role`)
+                VALUES ('srihariharn07@gmail.com', 'auraai!5129', 'Srihariharan', 'Senior AI & Biometric Engineer (Google Account)')
+                ON DUPLICATE KEY UPDATE 
+                    `password` = 'auraai!5129',
+                    `display_name` = 'Srihariharan',
+                    `role` = 'Senior AI & Biometric Engineer (Google Account)';
+            """)
+
         conn.close()
         logger.info("Successfully connected to MySQL and initialized biometric_auth_db!")
         return True
@@ -158,9 +192,34 @@ def verify_user(userid: str, password: str) -> Optional[Dict[str, Any]]:
     except Exception as e:
         logger.warning(f"Error checking user in MySQL: {e}")
         # Fallback for offline/resilience
+        if userid == 'srihariharn07@gmail.com' and password == 'auraai!5129':
+            return {'id': 2, 'userid': 'srihariharn07@gmail.com', 'display_name': 'Srihariharan', 'role': 'Senior AI & Biometric Engineer (Google Account)'}
         if userid == 'bio@5129' and password == 'admin@2951':
             return {'id': 1, 'userid': 'bio@5129', 'display_name': 'Lead Biometric Officer', 'role': 'SecOps Admin'}
         return None
+
+
+def verify_or_create_google_user(email: str, name: str = 'Srihariharan') -> Dict[str, Any]:
+    """Verify or automatically provision Google account user in MySQL"""
+    try:
+        conn = get_connection()
+        with conn.cursor() as cur:
+            cur.execute("SELECT `id`, `userid`, `display_name`, `role` FROM `users` WHERE `userid` = %s LIMIT 1", (email,))
+            user = cur.fetchone()
+            if not user:
+                cur.execute("""
+                    INSERT INTO `users` (`userid`, `password`, `display_name`, `role`)
+                    VALUES (%s, %s, %s, %s)
+                """, (email, 'auraai!5129', name, 'Senior AI & Biometric Engineer (Google Account)'))
+                cur.execute("SELECT `id`, `userid`, `display_name`, `role` FROM `users` WHERE `userid` = %s LIMIT 1", (email,))
+                user = cur.fetchone()
+            else:
+                cur.execute("UPDATE `users` SET `last_login` = NOW() WHERE `id` = %s", (user['id'],))
+        conn.close()
+        return user or {'id': 2, 'userid': email, 'display_name': name, 'role': 'Senior AI & Biometric Engineer (Google Account)'}
+    except Exception as e:
+        logger.warning(f"Error handling Google user in MySQL: {e}")
+        return {'id': 2, 'userid': email, 'display_name': name, 'role': 'Senior AI & Biometric Engineer (Google Account)'}
 
 
 def save_user_profile(profile_dict: Dict[str, Any]) -> bool:

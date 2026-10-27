@@ -158,6 +158,16 @@ USER_PERSONAS = {
         'mouse_speed': 950.0, 'mouse_curvature': 0.01,
         'jerk_factor': 0.02,
         'digraph_boost': {}
+    },
+    5: {
+        'name': 'Srihariharan (Google Account: srihariharn07@gmail.com)',
+        'role': 'Authorized Lead AI & Biometrics Engineer',
+        'typing_speed_wpm': 78.0,
+        'mean_hold': 68.0, 'std_hold': 11.0,
+        'mean_flight': 92.0, 'std_flight': 24.0,
+        'mouse_speed': 480.0, 'mouse_curvature': 0.16,
+        'jerk_factor': 0.18,
+        'digraph_boost': {'th': -22, 'he': -18, 'in': -16, 'er': -20}
     }
 }
 

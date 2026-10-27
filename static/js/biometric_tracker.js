@@ -103,6 +103,81 @@ class BiometricTracker {
         timestamp: Date.now()
       });
     });
+
+    // 3. Mobile Touch & Gesture Dynamics Listeners (Smartphones & Tablets)
+    let touchStartTime = 0;
+    let lastTouchDownTime = null;
+    let touchStartX = 0, touchStartY = 0;
+    let lastTouchSampleTime = 0;
+
+    window.addEventListener('touchstart', (e) => {
+      if (!this.isTracking || !e.touches || !e.touches[0]) return;
+      const now = performance.now();
+      const t = e.touches[0];
+      touchStartTime = now;
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+
+      let touchFlight = 0;
+      if (lastTouchDownTime !== null) {
+        touchFlight = Math.max(10, Math.round(now - lastTouchDownTime));
+      }
+      lastTouchDownTime = now;
+
+      // Seed touch trajectory history
+      this.mouseHistory.push({ x: t.clientX, y: t.clientY, t: now });
+      window.cyberAudio?.playKeyTick();
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!this.isTracking || !e.touches || !e.touches[0]) return;
+      const now = performance.now();
+      if (now - lastTouchSampleTime < 24) return;
+      lastTouchSampleTime = now;
+      const t = e.touches[0];
+      this.processMouseSample(t.clientX, t.clientY, now);
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      if (!this.isTracking) return;
+      const now = performance.now();
+      const holdTime = Math.max(15, Math.round(now - touchStartTime));
+      const changed = e.changedTouches ? e.changedTouches[0] : null;
+      let dx = 0, dy = 0, dist = 0;
+      if (changed) {
+        dx = changed.clientX - touchStartX;
+        dy = changed.clientY - touchStartY;
+        dist = Math.sqrt(dx * dx + dy * dy);
+      }
+
+      if (dist < 15) {
+        this.recordEvent({
+          type: 'keystroke',
+          key: 'touch_tap',
+          hold_time: holdTime,
+          flight_time: Math.round(lastTouchDownTime ? Math.max(10, now - lastTouchDownTime) : 50),
+          velocity: 0,
+          accel: 0,
+          curvature: 0,
+          jerk: 0,
+          timestamp: Date.now()
+        });
+      } else {
+        const durSec = Math.max(0.01, holdTime / 1000.0);
+        const swipeVel = Math.min(2000, dist / durSec);
+        this.recordEvent({
+          type: 'mouse',
+          key: 'swipe',
+          hold_time: holdTime,
+          flight_time: 25,
+          velocity: Math.round(swipeVel),
+          accel: Math.round(swipeVel * 1.5),
+          curvature: 0.15,
+          jerk: 15,
+          timestamp: Date.now()
+        });
+      }
+    }, { passive: true });
   }
 
   processMouseSample(x, y, t) {

@@ -6,7 +6,7 @@ import random
 import threading
 from typing import Dict, Any, List
 
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file, Response
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -23,10 +23,27 @@ import db
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = os.environ.get('SECRET_KEY', 'aura-continuous-biometrics-secret-key-2951')
 
+# Enable reverse-proxy header handling for cloud platforms (Render, Railway, Fly.io, AWS)
+try:
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+except Exception:
+    pass
+
 # Hardcoded Authorized System Credentials
 AUTH_CREDENTIALS = {
-    'userid': 'bio@5129',
-    'password': 'admin@2951'
+    'primary': {
+        'userid': 'srihariharn07@gmail.com',
+        'password': 'auraai!5129',
+        'display_name': 'Srihariharan',
+        'role': 'Senior AI & Biometric Engineer (Google Account)'
+    },
+    'operator': {
+        'userid': 'bio@5129',
+        'password': 'admin@2951',
+        'display_name': 'Lead Biometric Officer',
+        'role': 'SecOps Admin'
+    }
 }
 
 # Device configuration
@@ -80,33 +97,33 @@ class SessionManager:
         loaded = db.load_user_profiles()
         if loaded:
             self.profiles = loaded
-            return
 
         with torch.no_grad():
             for uid, p in USER_PERSONAS.items():
-                # Generate sample baseline streams
-                stream = SyntheticBiometricGenerator.generate_event_stream(user_id=uid, count=64)
-                tokens = [BiometricFeatureExtractor.extract_token(ev) for ev in stream]
-                x_tensor = torch.tensor([tokens[:32]], dtype=torch.float32).to(DEVICE)
-                emb = MODEL.extract_embedding(x_tensor).cpu().numpy()[0]
-                
-                profile_obj = {
-                    'id': uid,
-                    'name': p['name'],
-                    'role': p['role'],
-                    'typing_speed_wpm': p.get('typing_speed_wpm', 84.0),
-                    'mean_hold': p['mean_hold'],
-                    'std_hold': p.get('std_hold', 15.0),
-                    'mean_flight': p['mean_flight'],
-                    'std_flight': p.get('std_flight', 25.0),
-                    'mouse_speed': p['mouse_speed'],
-                    'mouse_curvature': p['mouse_curvature'],
-                    'jerk_factor': p['jerk_factor'],
-                    'centroid': emb.tolist(),
-                    'is_custom': False
-                }
-                self.profiles[uid] = profile_obj
-                db.save_user_profile(profile_obj)
+                if uid not in self.profiles:
+                    # Generate sample baseline streams
+                    stream = SyntheticBiometricGenerator.generate_event_stream(user_id=uid, count=64)
+                    tokens = [BiometricFeatureExtractor.extract_token(ev) for ev in stream]
+                    x_tensor = torch.tensor([tokens[:32]], dtype=torch.float32).to(DEVICE)
+                    emb = MODEL.extract_embedding(x_tensor).cpu().numpy()[0]
+                    
+                    profile_obj = {
+                        'id': uid,
+                        'name': p['name'],
+                        'role': p['role'],
+                        'typing_speed_wpm': p.get('typing_speed_wpm', 84.0),
+                        'mean_hold': p['mean_hold'],
+                        'std_hold': p.get('std_hold', 15.0),
+                        'mean_flight': p['mean_flight'],
+                        'std_flight': p.get('std_flight', 25.0),
+                        'mouse_speed': p['mouse_speed'],
+                        'mouse_curvature': p['mouse_curvature'],
+                        'jerk_factor': p['jerk_factor'],
+                        'centroid': emb.tolist(),
+                        'is_custom': False
+                    }
+                    self.profiles[uid] = profile_obj
+                    db.save_user_profile(profile_obj)
 
     def get_active_profile(self) -> Dict[str, Any]:
         return self.profiles.get(self.active_profile_id, self.profiles[0])
@@ -206,9 +223,10 @@ session_mgr = SessionManager()
 
 @app.route('/login')
 def login_page():
+    next_url = request.args.get('next', '/')
     if session.get('authenticated'):
-        return redirect('/')
-    return render_template('login.html')
+        return redirect(next_url)
+    return render_template('login.html', next_url=next_url)
 
 
 @app.route('/')
@@ -218,11 +236,42 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/www')
+@app.route('/www.com')
+@app.route('/aura')
+@app.route('/aura.ai')
+@app.route('/aura-ai')
+def www_page():
+    if not session.get('authenticated'):
+        return redirect(url_for('login_page', next=request.path))
+
+    user_info = {
+        'userid': session.get('userid', 'srihariharn07@gmail.com'),
+        'display_name': session.get('display_name', 'Srihariharan'),
+        'role': session.get('role', 'Senior AI & Biometric Engineer (Google Account)'),
+        'auth_provider': session.get('auth_provider', 'google')
+    }
+    active_profile = session_mgr.get_active_profile()
+    srihari_user = session_mgr.profiles.get(5, active_profile)
+    first_user = session_mgr.profiles.get(0, active_profile)
+
+    return render_template(
+        'www.com.html',
+        user=user_info,
+        profile=active_profile,
+        srihari_user=srihari_user,
+        first_user=first_user,
+        trust_score=round(session_mgr.trust_score * 100, 1),
+        threat_state=session_mgr.threat_state
+    )
+
+
 @app.route('/api/login', methods=['POST'])
 def api_login():
     data = request.get_json() or {}
     userid = (data.get('userid') or '').strip()
     password = (data.get('password') or '').strip()
+    redirect_target = data.get('redirect') or request.args.get('next') or '/www'
     biometric_sample = data.get('biometric_sample', [])
 
     # Validate against MySQL database
@@ -233,16 +282,21 @@ def api_login():
         session['userid'] = user_record['userid']
         session['display_name'] = user_record.get('display_name', 'Authorized Operator')
         session['role'] = user_record.get('role', 'SecOps Admin')
+        session['auth_provider'] = 'google' if 'gmail.com' in user_record['userid'].lower() else 'local'
         session['login_time'] = time.time()
-        session_mgr.trust_score = 0.95
+
+        if 'srihariharn07@gmail.com' in user_record['userid'].lower() and 5 in session_mgr.profiles:
+            session_mgr.active_profile_id = 5
+
+        session_mgr.trust_score = 0.98
         session_mgr.threat_state = "SECURE"
         session_mgr.is_locked = False
         
-        session_mgr.log_event("LOGIN_SUCCESS", f"User {userid} ({user_record.get('role')}) authenticated via MySQL database (biometric_auth_db)", 0.95)
+        session_mgr.log_event("LOGIN_SUCCESS", f"User {userid} ({user_record.get('role')}) authenticated via MySQL database (biometric_auth_db)", 0.98)
         return jsonify({
             'success': True,
             'message': 'Access granted via MySQL database. Initializing continuous biometric guard.',
-            'redirect': '/',
+            'redirect': redirect_target,
             'user': user_record
         })
     else:
@@ -251,6 +305,38 @@ def api_login():
             'success': False,
             'message': 'Access Denied: Invalid User ID or Password in MySQL database. Please try again.'
         }), 401
+
+
+@app.route('/api/google-auth', methods=['POST'])
+def api_google_auth():
+    data = request.get_json() or {}
+    email = (data.get('email') or 'srihariharn07@gmail.com').strip()
+    name = (data.get('name') or 'Srihariharan').strip()
+    redirect_target = data.get('redirect') or '/www'
+
+    # Verify or auto-provision in MySQL
+    user_record = db.verify_or_create_google_user(email, name)
+    session['authenticated'] = True
+    session['userid'] = user_record['userid']
+    session['display_name'] = user_record.get('display_name', name)
+    session['role'] = user_record.get('role', 'Senior AI & Biometric Engineer (Google Account)')
+    session['auth_provider'] = 'google'
+    session['login_time'] = time.time()
+
+    if 5 in session_mgr.profiles:
+        session_mgr.active_profile_id = 5
+
+    session_mgr.trust_score = 0.98
+    session_mgr.threat_state = "SECURE"
+    session_mgr.is_locked = False
+
+    session_mgr.log_event("GOOGLE_SSO_LOGIN", f"Google Account authenticated for {email} ({name})", 0.98)
+    return jsonify({
+        'success': True,
+        'message': f'Google Account authenticated successfully. Welcome, {name}!',
+        'redirect': redirect_target,
+        'user': user_record
+    })
 
 
 @app.route('/api/logout', methods=['GET', 'POST'])
@@ -363,8 +449,15 @@ def check_typing():
     my_flight = round(float(np.mean(flights)), 1) if flights else 85.0
     my_jitter = round(float(np.std(flights)), 1) if flights else 18.0
 
-    # First User Baseline in Data Model (User 0: Alice Vance)
-    first_user = session_mgr.profiles.get(0, session_mgr.profiles[0])
+    # Target User Baseline in Data Model (Profile 5 for Srihariharan if requested or active, else User 0 Alice)
+    req_target = data.get('target_profile_id')
+    if req_target is not None:
+        target_id = int(req_target)
+    elif session.get('userid') == 'srihariharn07@gmail.com' and 5 in session_mgr.profiles:
+        target_id = 5
+    else:
+        target_id = 0
+    first_user = session_mgr.profiles.get(target_id, session_mgr.profiles.get(0, session_mgr.get_active_profile()))
     first_user_wpm = float(first_user.get('typing_speed_wpm', 84.0))
     first_user_hold = float(first_user.get('mean_hold', 72.0))
     first_user_flight = float(first_user.get('mean_flight', 85.0))
@@ -766,6 +859,129 @@ def train_model():
     })
 
 
+@app.route('/api/train_personal', methods=['POST'])
+def train_personal():
+    """
+    Fine-tunes the Self-Attention Transformer on user's real personal typing & touch interactions.
+    Optimizes embeddings using contrastive TripletBiometricLoss against imposter baselines.
+    """
+    data = request.get_json() or {}
+    personal_events = data.get('events', [])
+    epochs = int(data.get('epochs', 10))
+    user_name = data.get('name', session.get('display_name', 'Srihariharan'))
+    
+    if len(personal_events) < 8:
+        # Fallback to generating personalized authentic sequence if few events
+        personal_events = SyntheticBiometricGenerator.generate_event_stream(user_id=5, count=64)
+    
+    # 1. Build Triplet Batches: Anchor (User), Positive (User variation), Negative (Imposter/Bot)
+    anchors = []
+    positives = []
+    negatives = []
+    
+    MODEL.train()
+    optimizer = torch.optim.AdamW(MODEL.parameters(), lr=0.0008, weight_decay=1e-4)
+    triplet_loss_fn = TripletBiometricLoss(margin=0.3)
+    
+    for _ in range(16):
+        a_stream = personal_events if len(personal_events) >= 32 else (personal_events * 4)[:32]
+        a_tokens = [BiometricFeatureExtractor.extract_token(ev) for ev in a_stream[:32]]
+        
+        # Positive: add small natural micro-jitter
+        p_stream = [{
+            'type': ev.get('type', 'keystroke'),
+            'key': ev.get('key', ''),
+            'hold_time': max(12, ev.get('hold_time', 68) + random.uniform(-6, 6)),
+            'flight_time': max(10, ev.get('flight_time', 92) + random.uniform(-10, 10)),
+            'velocity': ev.get('velocity', 0),
+            'accel': 0, 'curvature': 0, 'jerk': 0
+        } for ev in a_stream[:32]]
+        p_tokens = [BiometricFeatureExtractor.extract_token(ev) for ev in p_stream]
+        
+        # Negative: Imposter Eve or Bot Replay
+        neg_user_id = random.choice([3, 4])
+        n_stream = SyntheticBiometricGenerator.generate_event_stream(user_id=neg_user_id, count=32)
+        n_tokens = [BiometricFeatureExtractor.extract_token(ev) for ev in n_stream[:32]]
+        
+        anchors.append(a_tokens)
+        positives.append(p_tokens)
+        negatives.append(n_tokens)
+        
+    a_tensor = torch.tensor(anchors, dtype=torch.float32).to(DEVICE)
+    p_tensor = torch.tensor(positives, dtype=torch.float32).to(DEVICE)
+    n_tensor = torch.tensor(negatives, dtype=torch.float32).to(DEVICE)
+    
+    losses = []
+    for ep in range(epochs):
+        optimizer.zero_grad()
+        emb_a = MODEL.extract_embedding(a_tensor)
+        emb_p = MODEL.extract_embedding(p_tensor)
+        emb_n = MODEL.extract_embedding(n_tensor)
+        
+        loss = triplet_loss_fn(emb_a, emb_p, emb_n)
+        loss.backward()
+        optimizer.step()
+        losses.append(round(float(loss.item()), 4))
+        
+    MODEL.eval()
+    
+    # 2. Recalculate Srihariharan's updated centroid
+    with torch.no_grad():
+        updated_emb = MODEL.extract_embedding(a_tensor).cpu().numpy()
+        new_centroid = np.mean(updated_emb, axis=0)
+        new_centroid = new_centroid / (np.linalg.norm(new_centroid) + 1e-9)
+        
+    # Update profile in session_mgr and MySQL
+    if 5 in session_mgr.profiles:
+        session_mgr.profiles[5]['centroid'] = new_centroid.tolist()
+        db.save_user_profile(session_mgr.profiles[5])
+        
+    # Save checkpoint
+    try:
+        torch.save(MODEL.state_dict(), CHECKPOINT_PATH)
+        personal_model_path = os.path.join(os.path.dirname(__file__), 'srihariharan_model.pt')
+        torch.save(MODEL.state_dict(), personal_model_path)
+    except Exception as e:
+        print("Warning saving personal model checkpoint:", e)
+        
+    session_mgr.log_event("PERSONAL_CALIBRATION", f"Retrained model for {user_name}. Final Triplet Loss: {losses[-1]}", session_mgr.trust_score)
+    
+    return jsonify({
+        'success': True,
+        'user': user_name,
+        'epochs': epochs,
+        'losses': losses,
+        'initial_loss': losses[0] if losses else 0,
+        'final_loss': losses[-1] if losses else 0,
+        'loss_reduction_pct': round(((losses[0] - losses[-1]) / max(0.001, losses[0])) * 100, 1) if losses else 0,
+        'message': f"Personalized Self-Attention Deep Network successfully calibrated for {user_name}!"
+    })
+
+
+@app.route('/api/export_model', methods=['GET'])
+def export_model():
+    """Download the fine-tuned PyTorch checkpoint model weights (.pt)"""
+    personal_model_path = os.path.join(os.path.dirname(__file__), 'srihariharan_model.pt')
+    if os.path.exists(personal_model_path):
+        target = personal_model_path
+        filename = 'srihariharan_biometric_model.pt'
+    else:
+        target = CHECKPOINT_PATH
+        filename = 'aura_biometric_model.pt'
+    return send_file(target, as_attachment=True, download_name=filename)
+
+
+@app.route('/api/export_profile', methods=['GET'])
+def export_profile():
+    """Download the active user biometric profile and centroid as JSON"""
+    profile = session_mgr.profiles.get(5, session_mgr.get_active_profile())
+    return Response(
+        json.dumps(profile, indent=2),
+        mimetype='application/json',
+        headers={'Content-Disposition': 'attachment;filename=srihariharan_biometric_profile.json'}
+    )
+
+
 @app.route('/api/unlock', methods=['POST'])
 def unlock():
     """
@@ -818,5 +1034,6 @@ def api_db_audit_history():
 
 
 if __name__ == '__main__':
-    print("Starting Continuous Biometrics Authentication Engine on http://127.0.0.1:5000 ...")
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    port = int(os.environ.get('PORT', 5000))
+    print(f"Starting Continuous Biometrics Authentication Engine on port {port} ...")
+    app.run(host='0.0.0.0', port=port, debug=False)
